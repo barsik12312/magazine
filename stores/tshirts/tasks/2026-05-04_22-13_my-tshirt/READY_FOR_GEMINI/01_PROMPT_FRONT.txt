@@ -1,0 +1,55 @@
+This is a single-pass photorealistic IMAGE EDIT.
+
+BASE IMAGE (do not re-synthesize the scene): garment_front.*
+Treat garment_front.* as the canvas. Keep the entire image intact except for TWO printed regions on the front of the t-shirt:
+  (A) the main chest print — the larger graphic centered on the chest
+  (B) the small "tag" print on the FRONT of the shirt, just under the neckline — a small printed graphic placed centered on the upper chest, directly below the ribbed collar (commonly called a "neck print" / "collar print"; the user calls it "бирка")
+Everything else — the t-shirt silhouette, the fabric folds, the hanger, the wall, the window, the balcony, the lighting, the colors, the perspective, the framing, the depth of field — must be preserved 1:1 from garment_front.*. Do not regenerate the scene from scratch. Do not invent new objects. Do not stylize. Do not crop differently.
+
+REFERENCE IMAGES (attach in this order):
+- garment_front.*  ← BASE / canvas
+- print_1_front.*  ← new MAIN chest print (finished graphic asset, larger size, centered on the chest)
+- print_3_tag.*    ← new SMALL tag print under the neckline on the front (finished graphic asset, small size, centered just below the collar)
+- garment_tag.*    ← optional reference / close-up of the existing tag print area
+- scene_*.*        ← detail-memory references of the real balcony scene; use only as visual memory so background details are not invented if any tiny gap appears around the modified regions
+
+OBJECTIVE — DO ALL IN ONE PASS:
+1. Erase the existing MAIN chest print on the t-shirt in garment_front.* completely. Reconstruct clean cotton fabric in that area, preserving folds, light, and shadow as in the rest of the shirt.
+2. Erase the existing SMALL tag print just under the neckline on the front of the shirt completely. Reconstruct clean cotton fabric there too.
+3. Apply print_1_front.* onto the chest as the main print. Size and placement: same scale and position as the original main chest print in garment_front.* (large, centered, around mid-chest height). Treat as a matte screen-print transfer. Preserve every glyph, line, decoration, strike-through, and proportion of print_1_front.* — do not re-typeset, do not redesign, do not respell.
+4. Apply print_3_tag.* onto the front of the shirt just under the neckline as the small tag print. Size and placement: small, centered horizontally on the upper chest, directly below the ribbed collar — same scale and position as the original small tag print in garment_front.*. It should be visibly smaller than the main chest print. Preserve its glyphs and layout exactly. If print_3_tag.* is not provided, leave the tag area clean (no invented brand text).
+5. Both prints must coexist on the same front view: the small tag print near the collar AND the main chest print centered on the chest. Both are clearly visible, both look like real screen-print on cotton.
+
+PRINT BEHAVIOUR:
+- Treat print_1_front.* and print_3_tag.* as finished graphic design assets.
+- Do not re-render them as text from scratch.
+- Allow only natural cotton fabric distortion (slight curving with folds, soft fabric microtexture).
+- Matte screen-print look on cotton — no glossy sticker, no halo, no bevel, no embossed plastic effect, no decal sheen.
+
+LOCKED ELEMENTS FROM garment_front.* (DO NOT CHANGE):
+- t-shirt silhouette and fit
+- collar shape, ribbed neckband, sleeve and hem stitching
+- exact fabric color and tone
+- drape, wrinkles, folds, shadows
+- hanger position, hanger type, hanger color
+- background scene (balcony, window, balcony floor, radiator, ladder, plant, curtain, desk edge, windowsill objects, reflections)
+- camera angle, framing, crop, aspect ratio
+- lighting direction, exposure, white balance, ambient light
+
+SCENE / BALCONY DETAIL MEMORY:
+scene_*.* references exist only so the model has clean memory of how the balcony looks. Do NOT swap garment_front.*'s scene for scene_*.*. The base scene comes from garment_front.* and must remain identical. Use scene_*.* only as fallback memory when reconstructing tiny background pixels that may need to be inferred where the old print previously covered the shirt — and even then, only if the affected pixels are part of the background (e.g. shirt-edge regions). Otherwise scene_*.* is reference, not source.
+
+NEGATIVE / DO NOT INCLUDE:
+- do not regenerate the background from scratch
+- do not crop differently
+- do not change the t-shirt color
+- do not change print artwork meaning, glyphs, or layout
+- do not invent new logos or extra text anywhere
+- do not move the small tag print away from just under the neckline
+- do not place the small tag print on the inside of the shirt — it is on the OUTSIDE / front face of the shirt
+- do not add a model, mannequin, hands, or arms
+- no AI artifacts, melted letters, warped fabric edges, random decor additions
+- no watermarks, signatures, UI overlays
+
+OUTPUT:
+One single photorealistic image in the same aspect ratio and framing as garment_front.*. The main chest print and the small under-collar tag print are both replaced; everything else is preserved 1:1.

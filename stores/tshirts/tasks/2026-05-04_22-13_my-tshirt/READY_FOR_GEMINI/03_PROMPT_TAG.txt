@@ -1,0 +1,42 @@
+This is a photorealistic close-up shot of the small "tag" print on the FRONT of the t-shirt, just under the neckline. (This is what the user calls "бирка": a small printed graphic on the upper chest, centered directly below the ribbed collar — NOT an inner woven sewn label.)
+
+This prompt is ONLY needed if a tag print is part of the task (print_3_tag.*). If it is not provided, skip this step entirely.
+
+BASE IMAGE: garment_front.* (preferred). The tag print lives on the front side of the shirt, so the base must be a front-facing reference.
+
+REFERENCE IMAGES (attach in this order):
+- garment_front.*  ← BASE / canvas (front view of the garment)
+- print_3_tag.*    ← new tag print (finished graphic asset)
+- garment_tag.*    ← optional close-up reference of the existing under-collar tag print
+- result_front.*   ← optional: if you have already finished step 01, use it as additional fidelity reinforcement
+
+OBJECTIVE — DO ALL IN ONE PASS:
+1. Erase the existing small tag print under the neckline on the front of the shirt completely. Reconstruct clean cotton fabric there with the same folds, light, and shadow as the surrounding fabric.
+2. Apply print_3_tag.* in the same small size and same centered position, just under the ribbed collar on the front of the shirt. Preserve every glyph, line, and decoration from print_3_tag.* exactly.
+3. Frame the camera as a tight close-up around the upper chest / neckline area so the small tag print fills most of the frame and is clearly readable.
+4. Keep the surrounding ribbed collar, cotton fabric, lighting, perspective, and color exactly as in garment_front.*.
+
+PRINT BEHAVIOUR:
+- Treat print_3_tag.* as a finished graphic design asset.
+- Matte screen-print look on cotton — no glossy sticker, no halo, no bevel, no embossed plastic effect, no decal sheen.
+- Allow only natural cotton fabric distortion (slight curving with folds).
+- The print must look like ink bonded to the cotton surface, not a sticker on top.
+
+LOCKED ELEMENTS (DO NOT CHANGE):
+- ribbed collar texture, cotton jersey texture
+- t-shirt color and fabric tone
+- lighting direction and exposure
+- white balance and color temperature
+- depth of field and focus point
+
+NEGATIVE / DO NOT INCLUDE:
+- do NOT show or invent an inner woven sewn label — this prompt is about the small under-collar PRINT on the outside of the front of the shirt
+- no unrelated extra text blocks
+- no invented brand names beyond what is in print_3_tag.*
+- no glossy editorial light
+- no stains, no heavy wear
+- no AI artifacts, no warped letters, no melted edges
+- no watermarks, no UI overlays
+
+OUTPUT:
+One photorealistic close-up of the small under-collar tag print on the front of the t-shirt, with print_3_tag.* faithfully applied and the surrounding fabric, collar, and lighting preserved from garment_front.*.
