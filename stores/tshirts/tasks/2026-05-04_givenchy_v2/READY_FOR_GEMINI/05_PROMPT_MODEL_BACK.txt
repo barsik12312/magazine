@@ -1,52 +1,36 @@
-Generate one photorealistic 4:5 catalog photo of the same young man wearing the same white oversized cotton t-shirt from the product series, shown from the back.
+This is a photorealistic catalog photo of the same model wearing the t-shirt produced in step 02, viewed from the back.
 
-REFERENCE IMAGES:
-- Image 1 = back-view model pose / styling reference
-- Image 2 = back artwork layout / mockup reference
-- Image 3 = real back hanger garment reference in the balcony scene
+REFERENCE IMAGES (attach in this order):
+- result_back.*    ← the FINAL output of step 02 (REQUIRED — primary garment source of truth)
+- print_2_back.*   ← back print (finished graphic asset, fidelity reinforcement)
+- model_*.*        ← back-view model pose / styling reference (optional)
 
 OBJECTIVE:
-Create the back-view on-model companion image for the same t-shirt series. It must preserve the same garment identity, same fit family, and same back graphic logic as the hanger shot.
+Back-view on-model companion image for the same t-shirt series. Must preserve the same garment identity, same fit family, and same back artwork as result_back.*.
 
 MODEL:
-- same model type as the front on-model shot
-- slim athletic build
-- dark hair
-- natural proportions
-- no glamour
-- back view only / face not shown
+- same young man as the front on-model shot
+- slim athletic build, dark hair, natural proportions, no glamour
+- back view only, face not shown
+- if model_*.* is provided, follow its back-view pose family, framing, and crop
 
-GARMENT CONTINUITY:
-- same white t-shirt
-- same oversized cut
-- same collar and shoulder proportions
-- same fabric behavior
-- same drape quality
+GARMENT CONTINUITY (ABSOLUTE PRIORITY):
+result_back.* is the source of truth for the garment.
+Preserve: same color tone, same oversized cut, same collar and shoulder proportions, same fabric behavior, same drape quality, same overall shape, same back print size and placement.
 
-BACK GRAPHIC (CRITICAL):
-Use the back artwork reference as the source of truth.
-Preserve:
-- same composition
-- same centered placement
-- same proportions
-- same internal structure
-- same lower logo element
-- same graphic identity as the back hanger shot
+BACK PRINT / GRAPHIC FIDELITY:
+The back print must match result_back.* and print_2_back.* exactly. Do not redesign, simplify, move, or add extra text. Allow only natural body / fabric-following distortion.
 
-Do not redesign it.
-Do not simplify it.
-Do not move it.
-Do not add extra text or logos.
-Allow only natural body/fabric-following distortion.
+UNDER-COLLAR TAG PRINT:
+There is NO tag print on the back of this t-shirt. The "tag" lives on the FRONT of the shirt under the neckline and is therefore invisible from this back view. Do not invent any logo or text on the back of the neckline. The back collar area should be plain cotton.
 
 STYLING:
-- same jeans logic as front on-model shot
-- minimal catalog styling
-- no random accessories
+- same jeans logic as the front on-model shot
+- minimal catalog styling, no random accessories
 
 BACKGROUND:
-- clean studio-like catalog background
-- minimal distraction
+- clean neutral catalog-style backdrop by default
+- if scene_*.* or any custom background is provided, treat it as locked
 
 LIGHTING:
 - soft clean commercial light
@@ -55,21 +39,18 @@ LIGHTING:
 
 CAMERA / LOOK:
 - 4:5 vertical
-- back graphic clearly readable
+- back print clearly readable
 - natural catalog framing
 - realistic cotton texture and fold behavior
 
 NEGATIVE / DO NOT INCLUDE:
-- do not change the back graphic
-- do not change garment silhouette
-- do not add props or other people
+- do not change the back print
+- do not invent any tag/collar print on the back of the neckline
+- do not change the garment silhouette from result_back.*
+- no props or other people
 - do not show the face
-- no anatomy errors
-- no AI artifacts
-- no extra fingers
-- no melted edges
-- no UI overlays
-- no watermarks
+- no anatomy errors, no extra fingers, no melted edges
+- no UI overlays, no watermarks
 
 OUTPUT:
-One photorealistic 4:5 back-view on-model catalog image with strong continuity to the back hanger shot and faithful preservation of the back artwork.
+One photorealistic 4:5 back-view on-model catalog image. The garment matches result_back.* exactly; only the model and pose are added.

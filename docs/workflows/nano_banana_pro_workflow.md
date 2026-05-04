@@ -40,30 +40,31 @@
 - Референсы (фон, поза, типаж модели)
 
 ### Шаг Б — запускаешь скрипт
+Собери папку с исходниками по [docs/INPUT_FOLDER_CONVENTION.md](../INPUT_FOLDER_CONVENTION.md) и натрави на неё скрипт:
+
 ```bash
 python scripts/build_task.py \
   --type tshirt \
   --slug my-new-tee \
-  --brief "Белая футболка, принт XYZ, фон шкаф" \
-  --photos /path/to/photos \
-  --print /path/to/print.png \
-  --references /path/to/refs
+  --input inputs/2026-05-04_my-new-tee/
 ```
 
-Скрипт создаёт папку `stores/tshirts/tasks/2026-05-04_18-30_my-new-tee/` с:
+Скрипт сам разберёт файлы (`1`/`2`/`3`, `спереди`/`сзади`/`бирка`, `фон`/`модель`/`задание`) и создаст папку `stores/tshirts/tasks/<timestamp>_my-new-tee/` с:
 - `READY_FOR_GEMINI/` — то, что грузишь в Gemini
+- `READY_FOR_GEMINI/refs/` — нормализованные исходники (имена `print_1_front.*`, `garment_front.*`, `scene_*.*`, ...)
 - `outputs/` — куда сохраняешь готовые картинки
+- `inputs_snapshot/` — снимок исходников
 - `00_BRIEF.md` — твоё ТЗ для контекста
 
 ### Шаг В — генерируешь в Gemini
-1. Открой `READY_FOR_GEMINI/STEP_BY_STEP.txt` — там пошагово
+1. Открой `READY_FOR_GEMINI/README.txt` и `00_BRIEF.md` — там что и зачем
 2. Для каждого ракурса:
    - Открой соответствующий `0X_PROMPT_*.txt`
-   - **ОТРЕДАКТИРУЙ** плейсхолдеры в `[QUADRATIC BRACKETS]` (цвет, размер и т.п.)
-   - Скопируй в чат Gemini
-   - Прикрепи нужные референсы
+   - Скопируй промпт в чат Gemini
+   - Прикрепи файлы из `refs/` в порядке, указанном в промпте
    - Отправь, итерируй до результата
-3. Сохраняй финал в `outputs/` с понятным именем (`01_front_hanger.png`, и т.д.)
+3. Шаги 04/05 (на модели) запускай ПОСЛЕ шагов 01/02 — там в качестве референса используются твои готовые `result_front.*` / `result_back.*`
+4. Сохраняй финал в `outputs/` (имена не важны)
 
 ### Шаг Г — финальная доработка (если нужно)
 - Сложный текст / принт сломан → Photopea (см. `tshirt_print_mockup.md`)

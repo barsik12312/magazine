@@ -1,48 +1,85 @@
-ИЗВЕСТНЫЕ ПРОБЛЕМЫ И КАК ИХ ОБОЙТИ — GIVENCHY V2
+═══════════════════════════════════════════════════════════════════════
+  ИЗВЕСТНЫЕ ПРОБЛЕМЫ NANO BANANA PRO И КАК ИХ ОБОЙТИ (edit-mode)
+═══════════════════════════════════════════════════════════════════════
 
-1. МОДЕЛЬ МЕНЯЕТ ДЕТАЛИ БАЛКОНА
-Симптомы:
-- другой угол окна
-- пропал радиатор
-- другая лестница
-- другой горшок / растение
-- исчез край стола
-- поменялась штора
+ПРОБЛЕМА 1: Модель пересоздаёт сцену вместо edit поверх исходника
+─────────────────────────────────────────────────────────────────────
+  Это самая частая беда у генеративных моделей: вместо того чтобы
+  изменить только принт и бирку, модель ре-рендерит весь кадр. Тогда
+  фон, ткань, свет — всё «плывёт».
+  Решение: дописать в чат:
+    "garment_front.* (or garment_back.*) is the BASE IMAGE. Modify
+    only the chest/back print and the inner-collar tag. Preserve the
+    rest of the image pixel-by-pixel from the base. Do not re-synthesize
+    the scene, fabric, hanger, or lighting."
 
-Что писать:
-"Keep the exact same balcony scene from the references. This is a locked real environment, not a loosely inspired setup. Do not change any detail, object, placement, geometry, or crop logic. Preserve the same window, same handle, same radiator, same ladder, same plant, same curtain, same windowsill objects, same desk edge, and same balcony turf outside."
+ПРОБЛЕМА 2: Старый принт остаётся видимым / не до конца стёрт
+─────────────────────────────────────────────────────────────────────
+    "Erase the existing chest/back print COMPLETELY before applying
+    the new one. Reconstruct the clean cotton fabric in that area
+    using the surrounding folds, light, and shadow. There must be NO
+    ghost or remnant of the previous artwork."
 
-2. FRONT PRINT ЛОМАЕТСЯ КАК ТЕКСТ
-Симптомы:
-- буквы изменены
-- знак / лого встроен иначе
-- strike-through не там
-- что-то похоже, но не то
+ПРОБЛЕМА 3: Маленький принт-«бирка» сместили или убрали (только если он есть)
+─────────────────────────────────────────────────────────────────────
+  Напоминание: "бирка" в нашей системе — это маленький второй принт
+  на лицевой стороне футболки прямо под горловиной (не внутренняя
+  нашивка). Если в задании print_3_tag нет, бирки на финале быть и
+  не должно. Если она есть, и модель её сместила — пиши:
+    "Keep the small under-collar tag print on the FRONT of the
+    shirt, centered just below the ribbed collar, in the EXACT same
+    size and position. The artwork is replaced by print_3_tag.*; its
+    physical location and scale do not change. It must be visibly
+    smaller than the main chest print."
 
-Что писать:
-"Treat image 1 as a finished graphic asset, not as text to be re-rendered. Copy its visual appearance exactly onto the shirt. Do not respell, redesign, simplify, or replace any part of it. Preserve the exact glyph shapes, spacing, logo integration, and strike-through details."
+ПРОБЛЕМА 4: Принт ломается как текст / буквы перерисованы
+─────────────────────────────────────────────────────────────────────
+    "Treat print_1_front.* / print_2_back.* / print_3_tag.* as
+    finished graphic design assets. Do not re-typeset, redesign, or
+    respell any letter. Transfer the artwork visually as if applying
+    a screen-print transfer onto cotton."
+  Если 3-4 итерации не помогают — Photopea-фолбэк:
+    1. https://www.photopea.com
+    2. Открой результат + PNG принта
+    3. Перенеси принт как слой → Blend Mode "Multiply"
+    4. Ctrl+T — подгони размер по груди/спине
+    5. Filter → Distort → Displacement Map (футболку как displace-карту)
+    6. Save as PNG
 
-3. BACK GRAPHIC УПРОЩАЕТСЯ
-Симптомы:
-- пропали части композиции
-- изменилась форма
-- упростилась внутренняя структура
-- нижний элемент съехал или исчез
+ПРОБЛЕМА 5: На фото-на-модели принт / бирка отличаются от шагов 01/02
+─────────────────────────────────────────────────────────────────────
+    "result_front.* / result_back.* is the source of truth for the
+    garment. The chest print, back print, and the small under-collar
+    tag print (if it exists in result_front.*) must match it exactly:
+    same size, same position, same artwork. If result_front.* has no
+    tag print, do not invent one."
 
-Что писать:
-"Preserve the exact back composition from the mockup. Do not simplify, rotate, or alter the internal structure. Keep the same placement, same proportions, same lower element, and same overall silhouette."
+ПРОБЛЕМА 6: Лицо модели слишком яркое / похоже на знаменитость
+─────────────────────────────────────────────────────────────────────
+    "Make the model's face less prominent — frame higher, partial
+    face, hair over face, or looking down. Focus on the garment, not
+    on a specific identifiable face."
 
-4. МОДЕЛЬ НА МОДЕЛИ МЕНЯЕТ РАЗМЕР ПРИНТА
-Что писать:
-"Keep the print scale and placement consistent with the hanger shot. It must feel like the same physical garment, not a redesigned version."
+ПРОБЛЕМА 7: AI-артефакты (6 пальцев, искажения, melted edges)
+─────────────────────────────────────────────────────────────────────
+  Перегенерируй. Если упорно — попроси сменить позу / ракурс или
+  добавь в промпт:
+    "No AI artifacts: hands must have exactly 5 fingers each, no
+    extra limbs, no melted facial features."
 
-5. TAG SHOT ДАЁТ ГИББЕРИШ
-Это нормальная слабая зона большинства моделей.
-Если после 2-3 попыток текст всё ещё кривой — быстрее добить в Photopea.
+═══════════════════════════════════════════════════════════════════════
+  ОБЩИЕ ПРИНЦИПЫ
+═══════════════════════════════════════════════════════════════════════
 
-6. ГЛАВНЫЙ КОСЯК, КОТОРЫЙ НАШЛИ ПРИ ПОВТОРНОМ АНАЛИЗЕ
-Старый подход был слишком мягкий по фону.
-Правильный подход для твоих футболок:
-- балкон = locked scene
-- print = finished graphic asset
-- никакой свободы менять детали
+  • НЕ начинай новый чат на каждый ракурс — Pro помнит контекст
+  • Делай ракурсы последовательно в одном чате
+  • Если 3-4 итерации не помогают — переходи в Photopea
+  • Tshirts edit-mode: garment_front/back = canvas, prints = assets
+  • Балкон-референсы (scene_*) = детали-память, НЕ замена сцены
+  • Бирка = маленький принт под горловиной СПЕРЕДИ; опциональна
+    (если нет print_3_tag — её нет ни на 01, ни на 04, ни в шаге 03)
+  • Текст и логотипы — слабая зона ИИ, считай нормой ручную доработку
+  • Сохраняй промежуточные версии (иногда 1-я генерация лучше 4-й)
+  • 4K режим (если есть) — лучше включить для финала
+
+═══════════════════════════════════════════════════════════════════════

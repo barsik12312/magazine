@@ -1,82 +1,62 @@
-Generate one photorealistic 4:5 catalog photo of a young man wearing the same white oversized cotton t-shirt from the product series, shown from the front.
+This is a photorealistic catalog photo of a model wearing the t-shirt produced in step 01.
 
-REFERENCE IMAGES:
-- Image 1 = model pose / styling reference from marketplace screenshot
-- Image 2 = exact front print graphic
-- Image 3 = front print placement mockup
-- Image 4 = real front hanger garment reference in the balcony scene
+REFERENCE IMAGES (attach in this order):
+- result_front.*   ← the FINAL output of step 01 (REQUIRED — this is the primary garment source of truth)
+- print_1_front.*  ← chest print (finished graphic asset, fidelity reinforcement)
+- print_3_tag.*    ← tag print (finished graphic asset, optional reinforcement)
+- model_*.*        ← model pose / styling reference (optional — if not provided, fall back to defaults below)
 
 OBJECTIVE:
-Create a clean on-model front view that still feels like the exact same physical t-shirt from the hanger shots. The key priority is garment continuity and print fidelity.
+Create a clean on-model front view that feels like the exact same physical t-shirt from result_front.*, now worn by a young male model. The chest print and the inner-collar tag must be the same as in result_front.*.
 
-MODEL:
-- young man around early 20s
-- slim athletic build
-- dark hair
-- natural proportions
-- no celebrity look
-- no heavy fashion glamour
-- neutral expression
-- face not dominant in the frame
-- use the model reference for general pose family, styling, crop, and body proportions
+MODEL (defaults if model_*.* not provided):
+- young man, early 20s, slim athletic build
+- dark hair, natural proportions, no celebrity look, no heavy glamour
+- neutral or slightly relaxed expression
+- face should not dominate the frame; chest area is hero
+If model_*.* is provided, follow its pose family, body proportions, styling, framing, and crop logic.
 
-GARMENT CONTINUITY:
-This must be the same white oversized t-shirt from the hanger shots:
-- same white tone
-- same collar shape
-- same oversized cut
-- same fabric weight
-- same drape quality
-- same hem logic
+GARMENT CONTINUITY (ABSOLUTE PRIORITY):
+result_front.* is the source of truth for the garment.
+Preserve from result_front.*: same color tone, same oversized fit, same collar shape, same ribbed neckband, same fabric weight, same drape quality, same chest print size and placement, same under-collar tag print (if present in result_front.*), same overall garment identity.
+This must feel like the exact same t-shirt — not a reimagined version, not a different cut, not a different print.
 
-FRONT PRINT / GRAPHIC TRANSFER (CRITICAL):
-The front print reference is a finished graphic asset.
-Do not recreate it as newly generated text.
-Transfer it visually and preserve:
-- same glyph shapes
-- same composition
-- same spacing
-- same integrated logo element
-- same strike-through details
-- same placement logic from image 3
+CHEST PRINT / GRAPHIC FIDELITY:
+The chest print must match result_front.* and print_1_front.* exactly.
+Do not re-render any letters or shapes. Allow only natural body curvature and fabric tension distortion.
 
-The print on-body must feel like the same print as the hanger shot, only slightly affected by natural body curvature and fabric tension.
-Do not shrink it. Do not move it. Do not redesign it.
+UNDER-COLLAR TAG PRINT (only if it exists in result_front.*):
+If result_front.* contains a small tag print under the neckline on the front of the shirt, preserve it exactly: same artwork, same size, same position centered just below the collar, same matte screen-print look. Match print_3_tag.* if provided.
+If result_front.* does NOT have any tag print under the neckline, do not invent one — leave the upper chest area clean.
 
 STYLING:
-- light blue relaxed jeans similar to the reference
+- light blue relaxed jeans (or jeans matching model_*.* if provided)
 - simple clean footwear if visible
-- minimal styling
-- no accessories unless already present in the reference logic
+- minimal styling, no random accessories
 
 BACKGROUND:
-- clean studio-like catalog background
-- plain light background, minimal distraction
-- no random props
+- clean neutral catalog-style backdrop by default
+- if scene_*.* or any custom background is provided in the task, treat it as locked and reproduce it faithfully
 
 LIGHTING:
-- soft clean commercial catalog light
+- soft clean commercial light
 - realistic skin and fabric rendering
-- not glossy fashion-magazine lighting
+- no glossy fashion-magazine lighting
 
 CAMERA / LOOK:
 - 4:5 vertical
 - realistic catalog framing
-- chest area and print clearly readable
+- chest area and front print clearly readable
 - natural proportions
 - realistic cotton texture
 
 NEGATIVE / DO NOT INCLUDE:
 - do not change the front print artwork
 - do not change print placement
-- do not turn the model glamorous or luxury-editorial
-- do not add jewelry, watches, hats, sunglasses
-- do not create anatomy errors
-- no AI artifacts
-- no extra fingers
-- no melted hair
-- no UI overlays
-- no watermarks
+- do not change the garment shape from result_front.*
+- no jewelry, watches, hats, or sunglasses
+- no anatomy errors, no extra fingers, no melted hair
+- no UI overlays, no watermarks
 
 OUTPUT:
-One photorealistic 4:5 front-view on-model catalog image with strong garment continuity to the hanger shots and faithful front print transfer.
+One photorealistic 4:5 front-view on-model catalog image. The garment matches result_front.* exactly; only the model and pose are added.

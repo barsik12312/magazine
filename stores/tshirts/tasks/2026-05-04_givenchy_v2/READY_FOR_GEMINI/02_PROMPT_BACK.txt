@@ -1,0 +1,48 @@
+This is a single-pass photorealistic IMAGE EDIT.
+
+BASE IMAGE (do not re-synthesize the scene): garment_back.*
+Treat garment_back.* as the canvas. Keep everything intact except for ONE region: the back print on the t-shirt. Important: the small "tag" print is on the FRONT of the shirt (under the neckline), so it is NOT visible from the back. Do not try to add or invent any tag/collar artwork from this angle.
+
+REFERENCE IMAGES (attach in this order):
+- garment_back.*   ← BASE / canvas
+- print_2_back.*   ← new back print (finished graphic asset)
+- garment_tag.*    ← optional reference for fabric / collar close-up
+- scene_*.*        ← detail-memory references of the balcony scene (memory only, not a scene donor)
+
+OBJECTIVE — DO ALL IN ONE PASS:
+1. Erase the existing back artwork on the t-shirt in garment_back.* completely. Reconstruct clean cotton fabric there with the same folds, light, and shadow as the rest of the shirt.
+2. Apply print_2_back.* onto the upper back / centered placement area, faithfully, as a matte screen-print transfer. Same scale and position as the original back print in garment_back.*. Preserve every detail of the artwork.
+3. Do not show any tag/collar print from this back view. The tag print is a front-side element and is invisible from the back. The back of the neckline should be plain cotton (or the same neckline detail as in garment_back.* — no invented logos, no extra graphics).
+
+PRINT BEHAVIOUR:
+- print_2_back.* is a finished graphic design asset, not text to be re-rendered.
+- Preserve composition, glyph shapes, internal structure, line counts, and lower elements exactly.
+- Allow only natural fabric-following distortion.
+- Matte screen-print look — no sticker, no halo, no bevel, no plastic embossing.
+
+LOCKED ELEMENTS FROM garment_back.* (DO NOT CHANGE):
+- t-shirt silhouette and fit
+- collar shape, ribbed neckband, sleeves, hem
+- exact fabric color
+- drape, wrinkles, folds, shadows
+- hanger position, type, color
+- background scene (balcony, window, floor, radiator, ladder, plant, curtain, desk edge, windowsill, reflections)
+- camera angle, framing, crop, aspect ratio
+- lighting and white balance
+
+SCENE / BALCONY DETAIL MEMORY:
+scene_*.* references are visual memory only. Do not swap the base scene for scene_*.*. The scene comes from garment_back.* and must remain identical.
+
+NEGATIVE / DO NOT INCLUDE:
+- do not regenerate the background
+- do not crop differently
+- do not change the t-shirt color or shape
+- do not change print artwork meaning or glyphs
+- do NOT add a small tag/collar print on the back — it does not exist on this side
+- do NOT show any inner woven label as if it was on the outside back of the neck
+- no model, mannequin, hands
+- no AI artifacts, melted letters, warped fabric, random decor additions
+- no watermarks, no UI overlays
+
+OUTPUT:
+One photorealistic image in the same aspect ratio and framing as garment_back.*. Back print replaced; everything else preserved 1:1; no tag/collar print visible.

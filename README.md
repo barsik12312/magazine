@@ -84,41 +84,57 @@ cd magazine
 ```
 
 ### 2. Подготовь задание
+
+Собираешь папку с исходниками (см. [docs/INPUT_FOLDER_CONVENTION.md](docs/INPUT_FOLDER_CONVENTION.md)) и натравливаешь на неё `build_task.py`:
+
 ```bash
 python scripts/build_task.py \
   --type tshirt \
   --slug givenchy-v3 \
-  --brief "Белая oversized футболка с принтом N° FUCKS GIVENCHY" \
-  --photos путь/к/фоткам \
-  --print путь/к/print.png
+  --input inputs/2026-05-04_givenchy/
 ```
 
-Это создаст:
+Где входная папка может выглядеть так:
+```
+inputs/2026-05-04_givenchy/
+├── задание.md
+├── 1.png        ← основной грудной принт (обязательный)
+├── 2.jpg        ← back-принт (обязательный)
+├── 3.png        ← маленький принт-«бирка» под горловиной (опционально)
+├── спереди.jpg  ← реальное фото футболки спереди
+├── сзади.jpg    ← реальное фото футболки сзади
+├── бирка.jpg    ← опц. макро бирки
+└── модель.jpg   ← опц. референс позы
+```
+
+Скрипт автоматически разберёт файлы по категориям, нормализует имена и соберёт пакет:
+
 ```
 stores/tshirts/tasks/2026-05-04_18-30_givenchy-v3/
-├── 00_BRIEF.md              # твоё ТЗ
-├── READY_FOR_GEMINI/        # ↓ это и грузишь в Gemini / другую image-модель
-│   ├── README.txt
-│   ├── STEP_BY_STEP.txt
-│   ├── KNOWN_ISSUES.txt
-│   ├── 01_FRONT_HANGER_PROMPT.txt
-│   ├── 02_BACK_HANGER_PROMPT.txt
-│   ├── 03_TAG_PROMPT.txt
-│   ├── 04_MODEL_FRONT_PROMPT.txt
-│   ├── 05_MODEL_BACK_PROMPT.txt
-│   └── 0X_*.jpg             # отобранные референсы
-└── outputs/                 # сюда сохраняй финальные картинки
+├── 00_BRIEF.md
+├── inputs_snapshot/                  # снимок исходников
+├── outputs/                          # сюда сохраняешь финал
+└── READY_FOR_GEMINI/
+    ├── README.txt
+    ├── KNOWN_ISSUES.txt
+    ├── 01_PROMPT_FRONT.txt           # edit поверх garment_front: грудь + бирка
+    ├── 02_PROMPT_BACK.txt            # edit поверх garment_back
+    ├── 03_PROMPT_TAG.txt             # макро бирки (создаётся только если есть `3`)
+    ├── 04_PROMPT_MODEL_FRONT.txt     # человек спереди (база = твой результат шага 1)
+    ├── 05_PROMPT_MODEL_BACK.txt      # человек сзади (база = твой результат шага 2)
+    ├── refs/                         # нормализованные имена: print_1_front, garment_front, scene_*, ...
+    └── extras/                       # неподобранные файлы
 ```
 
 ### 3. Сгенерируй в Gemini
 1. Открой `https://gemini.google.com` (нужна подписка AI Plus или Pro)
 2. Выбери модель **Nano Banana Pro** (Gemini 3 Pro Image)
-3. Открой `READY_FOR_GEMINI/STEP_BY_STEP.txt` — там короткая логика по использованию
-4. Для каждого ракурса: копируешь отдельный полноценный промпт → прикрепляешь референсы → итерируешь
+3. Для каждого шага: копируешь промпт `0X_PROMPT_*.txt` → прикрепляешь файлы из `refs/` в указанном порядке → итерируешь
+4. Шаги 04/05 запускай ПОСЛЕ шагов 01/02 (используют твои готовые результаты)
 5. Сохраняй финал в `outputs/`
 
 ### 4. Если что-то сломалось
-Открой `KNOWN_ISSUES.txt` в задании или соответствующий воркфлоу в `docs/workflows/`. Для футболок новый главный принцип: balcony = locked scene, print = finished graphic asset. Самое частое — текст принта/бирки финишится в Photopea за 5 минут.
+Открой `KNOWN_ISSUES.txt` в задании или соответствующий воркфлоу в `docs/workflows/`. Для футболок главные принципы edit-mode: garment_front/back = canvas, print = finished graphic asset, балкон = детали-память (не scene-donor). Самое частое — текст принта/бирки финишится в Photopea за 5 минут.
 
 ---
 
@@ -149,6 +165,8 @@ stores/tshirts/tasks/2026-05-04_18-30_givenchy-v3/
 
 1. **Всё на английском в промптах** — Nano Banana Pro понимает русский, но на EN работает чище.
 2. **Каждая картинка = отдельный полноценный промпт** — пригодный и для Gemini, и для других моделей.
-3. **Для tshirts balcony = locked scene** — не вдохновение, а точный реальный шаблон сцены.
-4. **Print = finished graphic asset** — не проси модель заново набирать логотип/текст, проси визуально перенести artwork.
-5. **Iterative refinement + Photopea** — если после 2-3 итераций текст/бирка всё ещё ломаются, быстрее добить вручную.
+3. **Для tshirts edit-mode**: `garment_front` / `garment_back` = база (canvas). Стираем старый принт + (опц.) старую бирку и наносим новые за один прогон. Сцена сохраняется из исходника.
+4. **Балкон-референсы = detail-memory**, а не scene-donor. Они не заменяют сцену из реального фото.
+5. **Print = finished graphic asset** — не проси модель заново набирать логотип/текст, проси визуально перенести artwork.
+6. **Бирка** — это маленький принт под горловиной СПЕРЕДИ (не внутренняя нашивка), и она опциональна. Если файла `3` нет — бирки в задании нет.
+7. **Iterative refinement + Photopea** — если после 2-3 итераций текст/принт всё ещё ломается, быстрее добить вручную.
