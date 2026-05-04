@@ -12,7 +12,7 @@
 [твои исходники]                    [build_task.py]                [READY_FOR_GEMINI/]
   • фото товара         ───────►       собирает         ───────►    промпты EN+RU
   • PNG принта                                                       + отобранные референсы
-  • референсы фона/модели                                            + STEP_BY_STEP.txt
+  • референсы фона/модели                                            + balcony scene lock refs
   • краткое ТЗ                                                       + KNOWN_ISSUES.txt
                                                                               │
                                                                               ▼
@@ -59,7 +59,7 @@ magazine/
 │       └── clothing_avito_rework.md      # переделка скринов Авито
 ├── data/
 │   └── models/                   # досье моделей (общие)
-└── Задание.txt                   # глобальное ТЗ
+└── BRIEF.txt                     # глобальное ТЗ
 ```
 
 ---
@@ -97,7 +97,7 @@ python scripts/build_task.py \
 ```
 stores/tshirts/tasks/2026-05-04_18-30_givenchy-v3/
 ├── 00_BRIEF.md              # твоё ТЗ
-├── READY_FOR_GEMINI/        # ↓ это и грузишь в Gemini
+├── READY_FOR_GEMINI/        # ↓ это и грузишь в Gemini / другую image-модель
 │   ├── README.txt
 │   ├── STEP_BY_STEP.txt
 │   ├── KNOWN_ISSUES.txt
@@ -113,12 +113,12 @@ stores/tshirts/tasks/2026-05-04_18-30_givenchy-v3/
 ### 3. Сгенерируй в Gemini
 1. Открой `https://gemini.google.com` (нужна подписка AI Plus или Pro)
 2. Выбери модель **Nano Banana Pro** (Gemini 3 Pro Image)
-3. Открой `READY_FOR_GEMINI/STEP_BY_STEP.txt` — там пошагово
-4. Для каждого ракурса: копируешь промпт → прикрепляешь референсы → итерируешь
+3. Открой `READY_FOR_GEMINI/STEP_BY_STEP.txt` — там короткая логика по использованию
+4. Для каждого ракурса: копируешь отдельный полноценный промпт → прикрепляешь референсы → итерируешь
 5. Сохраняй финал в `outputs/`
 
 ### 4. Если что-то сломалось
-Открой `KNOWN_ISSUES.txt` в задании или соответствующий воркфлоу в `docs/workflows/`. Самое частое — текст принта/бирки финишится в Photopea за 5 минут.
+Открой `KNOWN_ISSUES.txt` в задании или соответствующий воркфлоу в `docs/workflows/`. Для футболок новый главный принцип: balcony = locked scene, print = finished graphic asset. Самое частое — текст принта/бирки финишится в Photopea за 5 минут.
 
 ---
 
@@ -140,14 +140,15 @@ stores/tshirts/tasks/2026-05-04_18-30_givenchy-v3/
 - [docs/workflows/lingerie_blending.md](docs/workflows/lingerie_blending.md) — multi-image композиция для белья
 - [docs/workflows/clothing_avito_rework.md](docs/workflows/clothing_avito_rework.md) — переделка скринов Авито
 - [prompts/brand_style.md](prompts/brand_style.md) — единый визуальный стандарт
+- [prompts/gem_system_prompt.md](prompts/gem_system_prompt.md) — system instruction для Custom Gem в Gemini
 - [prompts/templates/](prompts/templates/) — шаблоны промптов по категориям
 
 ---
 
 ## Принципы
 
-1. **Всё на английском в промптах** — Nano Banana Pro понимает русский, но на EN работает чище (особенно с текстом принтов).
-2. **Один чат на задание** — Pro помнит контекст, делай все ракурсы последовательно в одном чате.
-3. **Длинные подробные промпты** — 1500-3000 символов норма. Расписывай товар, фон, камеру, качество, негативы.
-4. **Iterative refinement** — не жди идеала с 1-й генерации. Получил → пишешь правки.
-5. **Photopea для финиша текста** — сложные шрифты на принтах/бирках доводи в Photopea (5 мин), не сражайся с моделью часами.
+1. **Всё на английском в промптах** — Nano Banana Pro понимает русский, но на EN работает чище.
+2. **Каждая картинка = отдельный полноценный промпт** — пригодный и для Gemini, и для других моделей.
+3. **Для tshirts balcony = locked scene** — не вдохновение, а точный реальный шаблон сцены.
+4. **Print = finished graphic asset** — не проси модель заново набирать логотип/текст, проси визуально перенести artwork.
+5. **Iterative refinement + Photopea** — если после 2-3 итераций текст/бирка всё ещё ломаются, быстрее добить вручную.

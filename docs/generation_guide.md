@@ -107,9 +107,10 @@
 ## Как мы организуем работу
 
 1. **Скриптом** `scripts/build_task.py` собираем готовую папку под задание
-2. **Руками** работаем в браузере с Gemini (Nano Banana Pro)
-3. **Иногда** доводим в Photopea
-4. **Сохраняем** финальные картинки в `outputs/` соответствующего задания
+2. **Руками** работаем в браузере с Gemini (Nano Banana Pro) или другой image-моделью
+3. Для tshirt-задач держим правило: **balcony = locked scene**, **print = finished graphic asset**
+4. **Иногда** доводим в Photopea
+5. **Сохраняем** финальные картинки в `outputs/` соответствующего задания
 
 Полный цикл расписан в [docs/workflows/nano_banana_pro_workflow.md](workflows/nano_banana_pro_workflow.md).
 

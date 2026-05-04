@@ -1,94 +1,106 @@
-Generate the BACK view of the SAME white oversized cotton crew-neck t-shirt from the previous front shot, hanging on the same black plastic hanger in the same wardrobe scene.
+Generate one photorealistic 4:5 e-commerce product photo showing the BACK of the same white oversized cotton crew-neck t-shirt hanging on the same black hanger in the EXACT same real balcony/window scene.
 
-REFERENCE IMAGES (new for this shot):
-- Image 1 = layout mockup showing the back design (a vertical surfboard
-  shape with parallel stripes inside, and a small CC logo at the bottom)
-- Image 2 = a real photo of the same wardrobe scene from the back angle,
-  showing how the t-shirt hangs from this perspective
+REFERENCE IMAGES:
+- Image 1 = back print layout / mockup reference
+- Image 2 = real back-view t-shirt reference hanging in the balcony scene
+- Image 3 = balcony master reference
+- Image 4 = balcony angle left
+- Image 5 = balcony angle center
+- Image 6 = balcony angle with reflections
+- Image 7 = balcony angle right
 
-KEEP from the previous shot in this chat:
-- Same exact white oversized cotton t-shirt (same color, same fit, same fabric)
-- Same exact wardrobe scene (green velvet curtain, hanger on window handle,
-  potted plant on right, metal shelf-ladder, wooden floor)
-- Same lighting (soft natural daylight from the window)
-- Same camera angle equivalent and aspect ratio (4:5 vertical, iPhone 15 Pro look)
+OBJECTIVE:
+Create the back-view companion shot for the same product series. It must feel like the exact same t-shirt, exact same location, exact same lighting family, exact same scene, just rotated to show the back side.
 
-═══════════════════════════════════════════════════════════════════════
-BACK PRINT (CRITICAL — match image 1 exactly):
-═══════════════════════════════════════════════════════════════════════
+BACK GRAPHIC (CRITICAL):
+Use image 1 as the source of truth for the back design.
+Preserve the exact composition from the mockup:
+- same overall vertical composition
+- same centered upper-back placement
+- same proportions
+- same internal structure
+- same number of main graphic divisions / stripes
+- same lower logo element position
+- same black graphic identity
 
-The back print is centered between the shoulder blades. It consists of:
+Do NOT redesign the back art.
+Do NOT simplify it.
+Do NOT rotate it horizontally.
+Do NOT move it off-center.
+Do NOT add extra text.
+Do NOT add extra logos.
 
-- A VERTICAL SURFBOARD shape (rounded-pointed at top, rounded-pointed at
-  bottom, longer than wide — typical surfboard silhouette)
-- Inside the surfboard: THREE parallel vertical black stripes running
-  from top to bottom (about 1/3 of the surfboard width each, with thin
-  white gaps between them)
-- At the bottom of the surfboard, just before the rounded tip: a small
-  CC-style logo (two interlocking C shapes, Chanel-style)
-- The surfboard outline is a clean black silhouette / contour
-- Print color: solid BLACK on the white shirt
-- Print height: ~25 cm (extending from upper-back to mid-back area)
-- Centered between the shoulder blades
+Treat the back design as fixed artwork to be transferred to the shirt, with only natural fabric-following distortion.
+The print should look like matte ink on cotton.
 
-The print should be screen-printed: matte black ink, no halo, no gloss.
-It follows the natural fabric drape (slight wrinkles cause subtle
-distortion) but remains clean and clearly recognizable as a surfboard
-with internal stripes.
+GARMENT CONTINUITY:
+This must be the exact same t-shirt as the front hanger shot:
+- same white tone
+- same oversized fit
+- same collar shape
+- same fabric weight
+- same hem behavior
+- same hanger type
+- same realism level
 
-⚠️ DO NOT replace the surfboard with another shape. DO NOT add extra
-   text. DO NOT add brand logos beyond the small CC at the bottom of
-   the surfboard.
+LOCKED REAL BALCONY SCENE (NO DETAIL CHANGES):
+Reconstruct the exact same balcony/window environment from the real references.
+Preserve every visible environmental detail:
+- same white frame geometry
+- same handle placement and orientation
+- same open-window logic where visible
+- same green turf outside on balcony
+- same radiator
+- same ladder
+- same plant
+- same windowsill objects
+- same curtain color and presence
+- same desk edge if visible
+- same perspective family
 
-═══════════════════════════════════════════════════════════════════════
-T-SHIRT BACK DETAILS:
-═══════════════════════════════════════════════════════════════════════
+Do not replace any object.
+Do not clean up the environment.
+Do not stylize the room.
+Do not make it another apartment.
+Do not use a generic staged balcony.
+This must feel like the same real scene.
 
-- Same fabric, same color, same cut as the front shot
-- Visible inner neckline ribbing on the back of the collar
-- The small woven brand tag should be visible just under the back of
-  the collar (small white rectangle, blurred is fine for this shot)
-- Natural fabric drape from the hanger
+COMPOSITION:
+- 4:5 vertical
+- shirt hanging naturally from the same handle / hook logic
+- back side clearly visible
+- marketplace-friendly framing
+- enough environment preserved to confirm continuity with front shot
 
-═══════════════════════════════════════════════════════════════════════
-SCENE (same as front shot — match image 2):
-═══════════════════════════════════════════════════════════════════════
+LIGHTING:
+Use the same real daylight logic from the balcony references.
+Natural indoor window light only.
+No cinematic relighting.
+No studio lighting.
+No dramatic shadow design.
 
-- Dark emerald velvet curtain background
-- Black plastic hanger on white window handle
-- Green potted plant on the right
-- Dark metal shelf-ladder on the right edge
-- Wooden parquet floor at bottom
-- Soft natural daylight from the left
+CAMERA / LOOK:
+- realistic smartphone-style product image
+- clean but natural exposure
+- shirt and back print sharp
+- believable depth and perspective
+- no HDR processing
+- no over-smoothing
 
-═══════════════════════════════════════════════════════════════════════
-CAMERA & TECHNICAL:
-═══════════════════════════════════════════════════════════════════════
+NEGATIVE / DO NOT INCLUDE:
+- do not change the back artwork design
+- do not change stripe count or internal geometry
+- do not add text on the back
+- do not change t-shirt color or fit
+- do not change the balcony details
+- do not change handle geometry
+- do not add mannequin, model, or hands
+- no AI artifacts
+- no melted edges
+- no warped fabric logic
+- no random decor additions
+- no watermarks
+- no UI overlays
 
-- iPhone 15 Pro main camera equivalent (26mm)
-- Eye-level, slightly angled view of the t-shirt back
-- Light depth of field: t-shirt sharp, background slightly soft
-- Aspect ratio: 4:5 vertical
-- Color temperature: 5500K
-- Match the look of the previous front shot in this chat
-
-═══════════════════════════════════════════════════════════════════════
-NEGATIVE — DO NOT INCLUDE:
-═══════════════════════════════════════════════════════════════════════
-
-- Do NOT change the surfboard design (no different shapes, no extra
-  decorations, no different stripes count)
-- Do NOT add text on the back
-- Do NOT change the t-shirt color or fit from the previous shot
-- Do NOT change the wardrobe scene
-- Do NOT add a person, model, or mannequin
-- No AI artifacts, no warped fabric, no melted edges
-- No watermarks, no signatures
-
-═══════════════════════════════════════════════════════════════════════
 OUTPUT:
-═══════════════════════════════════════════════════════════════════════
-
-One photorealistic 4:5 vertical image, matching the style and scene of
-the previous front shot but showing the back of the t-shirt with the
-surfboard print.
+One final 4:5 photorealistic back-view marketplace image, matching the same real balcony scene and same physical t-shirt as the front shot, with the back artwork preserved as faithfully as possible.

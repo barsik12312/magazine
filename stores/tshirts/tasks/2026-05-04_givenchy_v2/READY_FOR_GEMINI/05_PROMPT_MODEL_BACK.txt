@@ -1,100 +1,75 @@
-Generate the BACK view of the SAME young man wearing the SAME white oversized cotton t-shirt from the previous front-on-model shot.
+Generate one photorealistic 4:5 catalog photo of the same young man wearing the same white oversized cotton t-shirt from the product series, shown from the back.
 
-REFERENCE IMAGE (new):
-- Image 1 = a screenshot showing a young man from behind wearing a
-  similar oversized white t-shirt with a centered back print, baggy
-  light blue jeans, on a plain white studio background. Use this for:
-  pose, framing, fit, and overall styling.
-  Ignore the UI overlays (Avito buttons, text) — focus on the actual
-  body and t-shirt.
+REFERENCE IMAGES:
+- Image 1 = back-view model pose / styling reference
+- Image 2 = back artwork layout / mockup reference
+- Image 3 = real back hanger garment reference in the balcony scene
 
-KEEP from the previous shots in this chat:
-- Same model (same hair, build, skin, age — generated in front shot)
-- Same white oversized cotton t-shirt (continuity is critical)
-- Same baggy light blue jeans
-- Same studio background and lighting
+OBJECTIVE:
+Create the back-view on-model companion image for the same t-shirt series. It must preserve the same garment identity, same fit family, and same back graphic logic as the hanger shot.
 
-═══════════════════════════════════════════════════════════════════════
-POSE & FRAMING:
-═══════════════════════════════════════════════════════════════════════
+MODEL:
+- same model type as the front on-model shot
+- slim athletic build
+- dark hair
+- natural proportions
+- no glamour
+- back view only / face not shown
 
-- Standing relaxed, facing AWAY from the camera (back to camera)
-- Body straight or slight angle, both arms naturally at sides
-- Head tilted slightly down or to the side — the back of the head
-  visible, no face visible
-- Framed from mid-thigh up to the top of the head (or just below)
-- The back of the t-shirt clearly visible across the entire upper area
-- Aspect ratio: 4:5 vertical
+GARMENT CONTINUITY:
+- same white t-shirt
+- same oversized cut
+- same collar and shoulder proportions
+- same fabric behavior
+- same drape quality
 
-═══════════════════════════════════════════════════════════════════════
-T-SHIRT BACK PRINT (CRITICAL — match the back-on-hanger shot):
-═══════════════════════════════════════════════════════════════════════
+BACK GRAPHIC (CRITICAL):
+Use the back artwork reference as the source of truth.
+Preserve:
+- same composition
+- same centered placement
+- same proportions
+- same internal structure
+- same lower logo element
+- same graphic identity as the back hanger shot
 
-- Same vertical surfboard print as the back-on-hanger shot earlier in
-  this chat
-- Print is centered between the shoulder blades
-- Surfboard shape with three vertical parallel black stripes inside,
-  small CC logo at the bottom
-- Print is solid black, screen-printed, matte
-- Print height: ~25 cm (extending across the upper-to-mid back area)
-- Print follows the natural curvature and wrinkles of the fabric over
-  the back muscles, but remains clearly recognizable
+Do not redesign it.
+Do not simplify it.
+Do not move it.
+Do not add extra text or logos.
+Allow only natural body/fabric-following distortion.
 
-⚠️ Do NOT change the surfboard design. Match it EXACTLY to the back-on-
-   hanger shot earlier in this chat.
+STYLING:
+- same jeans logic as front on-model shot
+- minimal catalog styling
+- no random accessories
 
-═══════════════════════════════════════════════════════════════════════
-T-SHIRT FIT:
-═══════════════════════════════════════════════════════════════════════
+BACKGROUND:
+- clean studio-like catalog background
+- minimal distraction
 
-- Oversized, drop-shoulder, natural drape over the back and shoulders
-- Slight wrinkles where fabric meets body
-- Hem at low-hip / upper-thigh level
+LIGHTING:
+- soft clean commercial light
+- realistic fabric rendering
+- no glossy editorial exaggeration
 
-═══════════════════════════════════════════════════════════════════════
-BACKGROUND & LIGHTING:
-═══════════════════════════════════════════════════════════════════════
+CAMERA / LOOK:
+- 4:5 vertical
+- back graphic clearly readable
+- natural catalog framing
+- realistic cotton texture and fold behavior
 
-- Clean plain white seamless studio background
-- Same soft even studio lighting as the front-on-model shot
-- Subtle ground shadow under the model
-- Color temperature: 5500K daylight neutral
+NEGATIVE / DO NOT INCLUDE:
+- do not change the back graphic
+- do not change garment silhouette
+- do not add props or other people
+- do not show the face
+- no anatomy errors
+- no AI artifacts
+- no extra fingers
+- no melted edges
+- no UI overlays
+- no watermarks
 
-═══════════════════════════════════════════════════════════════════════
-CAMERA & TECHNICAL:
-═══════════════════════════════════════════════════════════════════════
-
-- 50mm equivalent, f/2.8
-- Eye-level
-- Aspect ratio: 4:5 vertical
-- Light depth of field, model sharp, background uniformly white
-
-═══════════════════════════════════════════════════════════════════════
-QUALITY:
-═══════════════════════════════════════════════════════════════════════
-
-- Photorealistic catalog-quality back view
-- Realistic skin on the neck and any visible arm areas (natural texture)
-- Realistic hair from behind (individual strands)
-- Realistic cotton drape and wrinkles
-- Natural proportions
-
-═══════════════════════════════════════════════════════════════════════
-NEGATIVE — DO NOT INCLUDE:
-═══════════════════════════════════════════════════════════════════════
-
-- Do NOT change the back print
-- Do NOT show the model's face (back view only)
-- Do NOT add accessories (no jewelry, no watches, no glasses)
-- No 6 fingers, no extra limbs, no warped body
-- No oversaturation, no HDR, no Instagram filter
-- No watermarks, no UI overlays, no text outside the t-shirt
-- No reflections, no other people
-
-═══════════════════════════════════════════════════════════════════════
 OUTPUT:
-═══════════════════════════════════════════════════════════════════════
-
-One photorealistic 4:5 vertical back-view fashion catalog photo of the
-same model from the previous shot, showing the surfboard back print
-of the t-shirt clearly.
+One photorealistic 4:5 back-view on-model catalog image with strong continuity to the back hanger shot and faithful preservation of the back artwork.

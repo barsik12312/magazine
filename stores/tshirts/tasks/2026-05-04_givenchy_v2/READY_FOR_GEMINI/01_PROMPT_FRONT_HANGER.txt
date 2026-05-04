@@ -1,105 +1,150 @@
-Generate a photorealistic e-commerce product photo of a white oversized cotton crew-neck t-shirt hanging on a black plastic clothes hanger.
+Generate one photorealistic 4:5 e-commerce product photo of a white oversized cotton crew-neck t-shirt hanging on a black plastic hanger in the EXACT real balcony/window scene shown in the attached references.
 
-REFERENCE IMAGES (very important):
-- Image 1 = the EXACT print design that must appear on the chest (PNG with black text on white)
-- Image 2 = the layout mockup showing where the print sits on the t-shirt
-- Image 3 = a real photo of a similar oversized white t-shirt in the EXACT scene I want (wardrobe / window / curtain)
-- Image 4 = a closer real photo for fabric texture and t-shirt fit reference
+REFERENCE IMAGES:
+- Image 1 = the exact front print graphic that must appear on the chest
+- Image 2 = the front placement mockup showing where the print should sit
+- Image 3 = real photo of a white t-shirt hanging in the target balcony scene from the correct angle
+- Image 4 = real close-up t-shirt reference for fabric texture, collar shape, and drape
+- Image 5 = balcony master reference
+- Image 6 = balcony angle reference left
+- Image 7 = balcony angle reference center
+- Image 8 = balcony angle reference with reflections
+- Image 9 = balcony angle reference right
 
-═══════════════════════════════════════════════════════════════════════
-PRINT (CRITICAL — match image 1 exactly):
-═══════════════════════════════════════════════════════════════════════
+OBJECTIVE:
+Create a final product photo that looks like a real smartphone shot of the t-shirt hanging in that exact real balcony scene. Do not invent a new room. Do not stylize the environment. Do not simplify the setup. Reconstruct the real scene and place the product in it convincingly.
 
-The chest print is exactly the design in image 1. Reproduce EVERY detail:
-- Top line: "N°" in heavy bold sans-serif, slightly smaller
-- Middle line: "FUCKS" in very heavy bold sans-serif, with a CC-style logo
-  embedded inside the U (two interlocking C-shapes overlapping vertically,
-  Chanel-style)
-- Bottom line: "GIVENCHY" in lighter weight, with a diagonal strikethrough
-  line crossing out the last 3 letters "CHY"
-- All text in solid BLACK on a WHITE shirt
-- Print width: ~20 cm (occupying the chest area, centered horizontally,
-  positioned just below the collar)
-- Print is screen-printed: matte ink, NO halo, NO gloss, NO 3D bevel
-- Print follows fabric naturally: slight wrinkles distort it where the
-  shirt creases, but letters remain perfectly legible
+FRONT PRINT / GRAPHIC TRANSFER (ABSOLUTE PRIORITY):
+The design in image 1 is a PRE-MADE GRAPHIC DESIGN ASSET. Treat it as finished artwork, not as text to be re-rendered or re-typed.
 
-⚠️ DO NOT add extra letters, do not change the spelling, do not insert
-   stylized characters not present in image 1. Keep "FUCKS" and "GIVENCHY"
-   spelled exactly as shown.
+Transfer the artwork from image 1 onto the chest of the t-shirt exactly as it appears visually.
+Preserve all graphic details exactly:
+- same glyph shapes
+- same letterforms
+- same black fill weight
+- same spacing and proportions
+- same integrated CC-style element
+- same strike-through placement
+- same overall composition
 
-═══════════════════════════════════════════════════════════════════════
-T-SHIRT (match images 2, 3, 4):
-═══════════════════════════════════════════════════════════════════════
+Do NOT reinterpret the artwork.
+Do NOT redesign it.
+Do NOT respell it.
+Do NOT replace letters with similar ones.
+Do NOT clean it up into another logo.
+Do NOT simplify it.
 
-- White, oversized, slightly boxy cut
-- 100% cotton heavyweight
-- Crew-neck with subtle ribbed collar
-- Short sleeves, drop shoulders
-- Slightly creased natural drape (not too smooth, not too wrinkled)
-- Fabric: realistic cotton weave visible up close, soft matte surface
+This is not “text on a shirt”.
+This is a finished graphic print asset being applied to fabric.
 
-═══════════════════════════════════════════════════════════════════════
-HANGER (match image 3):
-═══════════════════════════════════════════════════════════════════════
+Only allow subtle natural distortion caused by real cotton fabric behavior:
+- slight bending over wrinkles
+- tiny deformation caused by drape
+- no destruction of legibility
+- no warped or melted shapes
 
-- Black plastic clothes hanger, slim profile
-- Hooked on a white window handle / window frame edge
-- T-shirt hangs naturally from the hanger, slight asymmetry is fine
+The print must look like matte screen-print ink on cotton:
+- no glossy transfer look
+- no sticker look
+- no halo
+- no bevel
+- no embossed plastic effect
+- no floating graphic
 
-═══════════════════════════════════════════════════════════════════════
-BACKGROUND (match image 3 EXACTLY):
-═══════════════════════════════════════════════════════════════════════
+PRINT PLACEMENT (CRITICAL):
+Use image 2 for the exact chest placement logic.
+The print should sit centered on the chest and proportioned like a real streetwear chest print.
+Do not move it too high, too low, too small, or too large.
 
-- Dark emerald velvet curtain on the back wall, slightly textured
-- Window frame with white profile visible at the top (where the hanger
-  is hooked)
-- Green potted plant (fiddle leaf fig style) on the right side
-- Dark metal shelf-ladder partially visible on the right edge
-- Wooden parquet floor visible at the bottom edge
-- Soft natural daylight coming from the window on the left
-- Subtle shadow of the t-shirt on the curtain
+GARMENT:
+- white oversized t-shirt
+- heavyweight cotton jersey
+- matte surface
+- ribbed crew neck
+- realistic shoulder drop
+- natural cotton wrinkles
+- soft but structured drape
+- realistic hem and sleeve construction
+- not slim fit
+- not luxury CGI smooth
+- not plastic
 
-═══════════════════════════════════════════════════════════════════════
-CAMERA & TECHNICAL:
-═══════════════════════════════════════════════════════════════════════
+LOCKED REAL BALCONY SCENE (DO NOT CHANGE ANY DETAIL):
+Reconstruct the exact real balcony/window environment from images 3 and 5-9.
+This is a locked scene.
+No detail may be changed unless absolutely forced by perspective.
+Preserve the same visible real-world details:
+- same white window / door frame geometry
+- same handle location and orientation
+- same open-window logic from the reference framing
+- same black hanger hanging from the same handle area
+- same outside balcony area with green turf visible
+- same white radiator position
+- same dark ladder position
+- same large green potted tree on the right
+- same smaller pots and objects on the windowsill
+- same dark green curtain on the far right
+- same wooden desk edge on the right if visible in this crop
+- same floor tone and material
+- same crop family and perspective logic as the real references
 
-- Shot on iPhone 15 Pro main camera equivalent (26mm)
-- Eye-level, slightly angled to show the t-shirt in 3/4 perspective
-- Light depth of field: t-shirt sharp, background slightly soft
-- Aspect ratio: 4:5 vertical (portrait, marketplace-friendly)
-- Color temperature: 5500K (neutral daylight)
-- ISO equivalent: low, no visible noise
+Do not replace or remove objects.
+Do not restyle the room.
+Do not turn it into a studio.
+Do not create a different apartment.
+Do not add trendy decor.
+Do not clean up the reality of the space.
+Do not make the scene “inspired by” the references. It must be the same scene.
 
-═══════════════════════════════════════════════════════════════════════
-QUALITY REQUIREMENTS:
-═══════════════════════════════════════════════════════════════════════
+COMPOSITION:
+- aspect ratio 4:5 vertical
+- t-shirt is the hero object
+- hanger fully believable and physically attached to the window handle area
+- marketplace-friendly framing
+- realistic amount of surrounding scene preserved
+- use the crop logic closest to image 3
 
-- Photorealistic, indistinguishable from a real iPhone photo
-- Highest possible resolution and sharpness on the t-shirt and print
-- Realistic cotton fabric texture: visible weave, soft drape, natural
-  wrinkles at shoulders and bottom hem
-- Realistic shadows and ambient occlusion under the hanger
-- Natural color palette — no oversaturation, no HDR, no Instagram filter
+LIGHTING:
+Use the real daylight logic from the references.
+Soft natural daylight from the window side.
+Keep the lighting believable for an indoor balcony/window area.
+Do not turn it into dramatic editorial light.
+Do not add golden-hour stylization.
+Do not add artificial studio highlights.
 
-═══════════════════════════════════════════════════════════════════════
-NEGATIVE — DO NOT INCLUDE:
-═══════════════════════════════════════════════════════════════════════
+CAMERA / LOOK:
+- photorealistic smartphone-style product photo
+- natural lens perspective
+- clean but real contrast
+- sharp focus on the shirt and print
+- mild natural softness in background only if believable
+- no HDR look
+- no fake bokeh excess
+- no oversharpened AI crispness
 
-- Do NOT add extra letters or symbols not present in image 1
-- Do NOT change the spelling of "FUCKS", "GIVENCHY", or "N°"
-- Do NOT add brand logos other than the CC inside the U of "FUCKS"
-- Do NOT add visible stitching seams beyond standard cotton t-shirt
-- Do NOT add a person, model, mannequin, or hands
-- Do NOT add text outside the t-shirt area (no signs, no labels on hanger)
-- Do NOT add watermarks, signatures, or any UI overlays
-- NO AI artifacts: no warped letters, no melted edges, no extra fingers
-  (no model in this shot anyway)
-- NO oversaturation, NO plastic-y skin or fabric, NO HDR look
+NEGATIVE / DO NOT INCLUDE:
+- do not change the scene layout
+- do not change the handle geometry
+- do not replace the plant
+- do not replace the ladder
+- do not replace the radiator
+- do not replace the balcony floor / turf
+- do not remove windowsill objects
+- do not change the curtain color
+- do not create another room
+- do not add mannequin, person, or hands
+- do not re-render the print as new text
+- do not change any letters or symbols in the print artwork
+- do not add extra logos
+- do not add text outside the t-shirt area
+- no AI artifacts
+- no warped letters
+- no melted edges
+- no glossy sticker print
+- no fake showroom styling
+- no watermarks
+- no signatures
+- no UI overlays
 
-═══════════════════════════════════════════════════════════════════════
 OUTPUT:
-═══════════════════════════════════════════════════════════════════════
-
-One photorealistic image, 4:5 vertical, ready for an e-commerce product
-listing. Maximum quality.
+One final 4:5 photorealistic product image that looks like a real photo taken in the exact attached balcony scene, with the provided front artwork transferred faithfully onto the shirt and with no scene details changed.

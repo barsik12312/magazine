@@ -45,6 +45,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PROMPTS_DIR = REPO_ROOT / "prompts" / "templates"
+BALCONY_TEMPLATE_DIR = REPO_ROOT / "stores" / "tshirts" / "backgrounds" / "balcony_template"
 
 # Сценарии: какие ракурсы делаем для каждого типа товара.
 # Имена файлов промптов и описаний.
@@ -131,8 +132,8 @@ def make_brief(task_dir: Path, ttype: str, slug: str, brief: str,
         "",
         "## Что делать",
         "1. Открой `READY_FOR_GEMINI/`",
-        "2. Прочитай `STEP_BY_STEP.txt`",
-        "3. Промпты для каждого ракурса — `0X_PROMPT_*.txt`",
+        "2. Используй отдельный `0X_PROMPT_*.txt` на каждую картинку",
+        "3. Для tshirt-задач balcony references — обязательный scene lock",
         "4. Готовые картинки сохраняй в `outputs/`",
         "",
     ]
@@ -149,10 +150,11 @@ def make_readme(target: Path, ttype: str, scenarios: list[dict[str, str]]) -> No
         f"  Ракурсов: {len(scenarios)}",
         "",
         "  ЧТО ДЕЛАТЬ:",
-        "  1) Открой STEP_BY_STEP.txt и читай по шагам",
-        "  2) Перед каждой генерацией смотри в нужный 0X_PROMPT_*.txt",
-        "  3) Если что-то идёт не так — открой KNOWN_ISSUES.txt",
-        "  4) Готовые картинки сохраняй в ../outputs/",
+        "  1) На каждую картинку используй отдельный 0X_PROMPT_*.txt",
+        "  2) Прикладывай именно те референсы, которые перечислены в промпте",
+        "  3) Для tshirt hanger shots balcony refs обязательны",
+        "  4) Если что-то идёт не так — открой KNOWN_ISSUES.txt",
+        "  5) Готовые картинки сохраняй в ../outputs/",
         "",
         "  СОДЕРЖИМОЕ:",
     ]
@@ -172,11 +174,11 @@ def make_step_by_step(target: Path, scenarios: list[dict[str, str]]) -> None:
         "  ИНСТРУКЦИЯ ДЛЯ NANO BANANA PRO (Gemini)",
         "═" * 71,
         "",
-        "  ШАГ 0 — ПОДГОТОВКА",
-        "  1. Открой https://gemini.google.com (нужна подписка AI Plus или Pro)",
-        "  2. Создай новый чат",
-        "  3. Сверху выбери модель: 'Nano Banana Pro' / 'Gemini 3 Pro Image'",
-        "  4. В настройках чата (если есть) включи 4K вывод",
+        "  ОБЩИЙ ПРИНЦИП",
+        "  1. На каждую картинку есть отдельный полноценный промпт",
+        "  2. Если используешь Gemini — лучше держать серию в одном чате",
+        "  3. Но промпты можно использовать и в других моделях",
+        "  4. Для tshirt hanger shots balcony references обязательны",
         "",
     ]
     for i, s in enumerate(scenarios, 1):
@@ -209,12 +211,12 @@ KNOWN_ISSUES_TEMPLATE = """\
   ИЗВЕСТНЫЕ ПРОБЛЕМЫ NANO BANANA PRO И КАК ИХ ОБОЙТИ
 ═══════════════════════════════════════════════════════════════════════
 
-ПРОБЛЕМА 1: Текст / шрифт сломан (буквы переставлены, гибериш)
+ПРОБЛЕМА 1: FRONT PRINT ломается как текст
 ─────────────────────────────────────────────────────────────────────
   Решение A — попроси перерендерить с прямым указанием:
-    "The text/print is incorrect. The exact design is in image [N].
-    Re-render with the print copied EXACTLY — same letters, same
-    spelling, same font weight. Keep everything else unchanged."
+    "Treat image [N] as a finished graphic asset, not as text to be
+    re-rendered. Copy its visual appearance exactly onto the shirt.
+    Do not respell, redesign, or simplify any part of it."
 
   Решение B — финиш в Photopea (5 минут, бесплатно):
     1. https://www.photopea.com
@@ -224,11 +226,11 @@ KNOWN_ISSUES_TEMPLATE = """\
     5. Filter → Distort → Displacement Map (футболку как displace-карту)
     6. Сохрани как PNG
 
-ПРОБЛЕМА 2: Фон / сцена отличается от референса
+ПРОБЛЕМА 2: Балкон / сцена отличается от референса
 ─────────────────────────────────────────────────────────────────────
-  "Background must match image [N] EXACTLY — [подробное описание
-  ключевых элементов]. Re-render keeping everything else the same
-  but fixing the background."
+  "Keep the exact same balcony scene from the references. This is a
+  locked real environment, not a loosely inspired setup. Do not change
+  any detail, object, placement, geometry, or crop logic."
 
 ПРОБЛЕМА 3: Цвет товара плавает между ракурсами
 ─────────────────────────────────────────────────────────────────────
@@ -262,6 +264,7 @@ KNOWN_ISSUES_TEMPLATE = """\
   • НЕ начинай новый чат на каждый ракурс — Pro помнит контекст
   • Делай все ракурсы в ОДНОМ чате последовательно
   • Если 3-4 итерации не помогают — переходи в Photopea
+  • Для tshirts правильная логика: balcony = locked scene, print = finished graphic asset
   • Текст и логотипы — слабая зона ИИ, считай нормой ручную доработку
   • Сохраняй промежуточные версии (иногда 1-я генерация лучше 4-й)
   • 4K режим (если есть) — лучше включить для финала
@@ -312,9 +315,10 @@ def make_prompts(target: Path, ttype: str,
         f"  PROMPT TEMPLATE FOR NANO BANANA PRO",
         "═" * 71,
         "",
-        "ВАЖНО: ниже — заготовка из общего шаблона. Перед отправкой в Gemini",
+        "ВАЖНО: ниже — полноценная заготовка из общего шаблона.",
         "ОБЯЗАТЕЛЬНО заполни плейсхолдеры в [QUADRATIC BRACKETS] под свой",
-        "конкретный товар (цвет, размер, описание принта, шрифт и т.п.).",
+        "конкретный товар. Если это tshirt-задача, считай balcony references",
+        "обязательным scene lock, а print reference — finished graphic asset.",
         "",
         f"BRIEF: {brief.strip() if brief else '(заполни вручную)'}",
         "",
@@ -404,7 +408,8 @@ def main() -> int:
     # Собираем все referenced images по порядку:
     # 1) print (если есть) — для футболок
     # 2) photos
-    # 3) references
+    # 3) built-in balcony template refs for tshirts
+    # 4) references
     images: list[Path] = []
     if args.print_file:
         if not args.print_file.exists():
@@ -413,6 +418,8 @@ def main() -> int:
         else:
             images.append(args.print_file)
     images.extend(discover_image_files(args.photos))
+    if args.type == "tshirt" and BALCONY_TEMPLATE_DIR.exists():
+        images.extend(discover_image_files(BALCONY_TEMPLATE_DIR))
     images.extend(discover_image_files(args.references))
 
     n_copied = copy_references(images, ready, prefix_offset=1)

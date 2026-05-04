@@ -1,170 +1,48 @@
-═══════════════════════════════════════════════════════════════════════
-  ИЗВЕСТНЫЕ ПРОБЛЕМЫ И КАК ИХ ОБОЙТИ
-  Задание 1 — N° FUCKS GIVENCHY
-═══════════════════════════════════════════════════════════════════════
+ИЗВЕСТНЫЕ ПРОБЛЕМЫ И КАК ИХ ОБОЙТИ — GIVENCHY V2
 
-Nano Banana Pro значительно лучше старых моделей, но всё равно имеет
-ограничения. Вот реалистичный список того, что может пойти не так,
-и как это исправить.
+1. МОДЕЛЬ МЕНЯЕТ ДЕТАЛИ БАЛКОНА
+Симптомы:
+- другой угол окна
+- пропал радиатор
+- другая лестница
+- другой горшок / растение
+- исчез край стола
+- поменялась штора
 
-───────────────────────────────────────────────────────────────────────
-  ПРОБЛЕМА 1: Принт "FUCKS" / "GIVENCHY" сломан
-───────────────────────────────────────────────────────────────────────
+Что писать:
+"Keep the exact same balcony scene from the references. This is a locked real environment, not a loosely inspired setup. Do not change any detail, object, placement, geometry, or crop logic. Preserve the same window, same handle, same radiator, same ladder, same plant, same curtain, same windowsill objects, same desk edge, and same balcony turf outside."
 
-  Симптомы:
-  • Буквы переставлены (FUOKS, FUCKS с лишней буквой, GIVENCНY и т.п.)
-  • CC внутри U расположен неправильно (например, как звёздочки)
-  • Зачёркивание "CHY" поставлено не там или перечёркивает другое слово
-  • Шрифт другой (тонкий вместо жирного)
+2. FRONT PRINT ЛОМАЕТСЯ КАК ТЕКСТ
+Симптомы:
+- буквы изменены
+- знак / лого встроен иначе
+- strike-through не там
+- что-то похоже, но не то
 
-  Решение A — попроси перерендерить (1-3 итерации):
-    "The print is incorrect. The exact print design is in image 1.
-    Please re-render the entire image with the print copied EXACTLY
-    from image 1 — same letters, same spelling, same font weight,
-    same composition. Pay special attention to:
-    - 'FUCKS' has CC-logo inside the U (not extra letters)
-    - 'GIVENCHY' has only the LAST 3 letters CHY crossed out
-    Keep all other elements (background, hanger, lighting) unchanged."
+Что писать:
+"Treat image 1 as a finished graphic asset, not as text to be re-rendered. Copy its visual appearance exactly onto the shirt. Do not respell, redesign, simplify, or replace any part of it. Preserve the exact glyph shapes, spacing, logo integration, and strike-through details."
 
-  Решение B — финиш в Photopea (бесплатно, 5 минут):
-    1. Открой https://www.photopea.com (это бесплатный Photoshop)
-    2. Открой результат от Gemini (тот где принт сломан)
-    3. Открой PNG принта (01_print_FRONT_design.jpg)
-    4. Перенеси принт как новый слой
-    5. Поставь Blend Mode = "Multiply"
-    6. Свободная трансформация (Ctrl+T) — подгони размер и позицию
-       поверх существующего принта (так чтобы перекрыть)
-    7. Filter → Distort → Displacement Map (загрузи саму футболку
-       как displace-карту, scale 5-10) — принт чуть-чуть искривится
-       по складкам, выглядит как настоящая печать
-    8. Сохрани как PNG
+3. BACK GRAPHIC УПРОЩАЕТСЯ
+Симптомы:
+- пропали части композиции
+- изменилась форма
+- упростилась внутренняя структура
+- нижний элемент съехал или исчез
 
-  Решение C — прими как есть:
-    Если принт примерно похож (даже если 1-2 буквы кривые), для
-    маркетплейса этого может быть достаточно. Покупатели в основном
-    смотрят на общий вид, не вглядываются в шрифт.
+Что писать:
+"Preserve the exact back composition from the mockup. Do not simplify, rotate, or alter the internal structure. Keep the same placement, same proportions, same lower element, and same overall silhouette."
 
-───────────────────────────────────────────────────────────────────────
-  ПРОБЛЕМА 2: Фон-шкаф отличается от референса
-───────────────────────────────────────────────────────────────────────
+4. МОДЕЛЬ НА МОДЕЛИ МЕНЯЕТ РАЗМЕР ПРИНТА
+Что писать:
+"Keep the print scale and placement consistent with the hanger shot. It must feel like the same physical garment, not a redesigned version."
 
-  Симптомы:
-  • Шторы другого цвета (не тёмно-зелёные)
-  • Растение не такое
-  • Освещение жёсткое вместо мягкого
-  • Появляется лишняя мебель/декор
+5. TAG SHOT ДАЁТ ГИББЕРИШ
+Это нормальная слабая зона большинства моделей.
+Если после 2-3 попыток текст всё ещё кривой — быстрее добить в Photopea.
 
-  Решение:
-    "Background must match image 3 EXACTLY. The wall behind should
-    be a dark emerald velvet curtain (not painted wall). On the right
-    there's a green potted plant and a dark metal shelf-ladder. The
-    light comes softly from the window on the left. Re-render keeping
-    everything else the same but fixing the background."
-
-───────────────────────────────────────────────────────────────────────
-  ПРОБЛЕМА 3: Сёрфборд на спине упрощён или искажён
-───────────────────────────────────────────────────────────────────────
-
-  Симптомы:
-  • Сёрфборд без полос внутри
-  • Полос больше или меньше 3
-  • CC-логотип отсутствует / в другом месте
-  • Сёрфборд горизонтальный вместо вертикального
-
-  Решение A — итерация:
-    "The back print should match image 1: a vertical surfboard shape
-    (taller than wide), with exactly THREE vertical parallel black
-    stripes inside, and a small CC logo at the bottom. Re-render
-    keeping everything else the same."
-
-  Решение B — Photopea (см. Проблема 1, Решение B)
-
-───────────────────────────────────────────────────────────────────────
-  ПРОБЛЕМА 4: Бирка с гибберишем вместо "FUCK GIVENCHY"
-───────────────────────────────────────────────────────────────────────
-
-  Симптомы:
-  • Текст на бирке нечитаемый
-  • Бренд "FUCK CIVCNCHY" или "FACK GIVENGY" и т.п.
-  • Размер не M
-  • Care-символы выглядят как иероглифы
-
-  Решение A — итерация (попробуй 2-3 раза):
-    "The brand name on the tag must be EXACTLY 'FUCK GIVENCHY' —
-    F, U, C, K, space, G, I, V, E, N, C, H, Y. Re-render with sharp
-    legible text, no warped letters."
-
-  Решение B — почти всегда нужен Photopea:
-    Текст на бирках — самая больная точка ИИ. Реалистичнее всего
-    делать так:
-    1. Сгенерируй просто бирку без текста (или с заглушкой типа "BRAND")
-    2. В Photopea дорисуй текст шрифтом (Arial Bold или Helvetica) —
-       30 секунд работы
-    3. Применить Filter → Noise → Add Noise (немного) для аутентичности
-
-───────────────────────────────────────────────────────────────────────
-  ПРОБЛЕМА 5: Лицо модели слишком яркое / похоже на конкретного человека
-───────────────────────────────────────────────────────────────────────
-
-  Симптомы:
-  • Модель неестественно красивая, "глянцевая"
-  • Лицо доминирует в кадре (не нужно для карточки футболки)
-  • Лицо похоже на знаменитость
-
-  Решение:
-    "Make the model's face less prominent — crop higher (frame from
-    chin level), or have him look downward, or have hair fall slightly
-    over the face. We don't need a clearly identifiable face — the
-    focus should be on the t-shirt and print."
-
-───────────────────────────────────────────────────────────────────────
-  ПРОБЛЕМА 6: На фото-на-модели принт меньше / в другом месте, чем на
-  фото-на-вешалке
-───────────────────────────────────────────────────────────────────────
-
-  Симптомы:
-  • Принт сместился к плечу
-  • Принт в 2 раза меньше
-  • Принт вообще исчез с груди
-
-  Решение:
-    "The chest print 'N° FUCKS GIVENCHY' must be the SAME SIZE and
-    SAME POSITION as in the t-shirt-on-hanger shot earlier in this
-    chat. It should be ~20 cm wide, centered on the chest, just below
-    the collar. Re-render."
-
-───────────────────────────────────────────────────────────────────────
-  ПРОБЛЕМА 7: Цвет футболки слегка отличается между ракурсами
-───────────────────────────────────────────────────────────────────────
-
-  Симптомы:
-  • Один кадр — чисто белый, другой — кремовый
-  • Тёплый/холодный оттенок плавает
-
-  Решение:
-    "All 5 shots in this series must use the same exact white t-shirt
-    color: pure white, color temperature 5500K, no cream / no off-white
-    tint. Re-render with consistent color."
-
-  Если не помогает — финальный color-correction в Photopea:
-    Image → Adjustments → Color Balance → подкрути на нейтральный белый
-
-───────────────────────────────────────────────────────────────────────
-  ОБЩИЕ ПРИНЦИПЫ
-───────────────────────────────────────────────────────────────────────
-
-  • НЕ начинай новый чат на каждый ракурс — Pro помнит контекст.
-    Все 5 фото делай в ОДНОМ чате последовательно.
-
-  • Если 3-4 итерации не помогают исправить деталь — переходи в
-    Photopea. Это часто быстрее, чем продолжать спорить с моделью.
-
-  • Текст и логотипы — это исторически слабая зона ИИ.
-    Считай нормой что они потребуют ручной доработки.
-
-  • Сохраняй промежуточные версии! Иногда первая генерация лучше
-    четвёртой. Скачивай каждую и выбирай лучшую.
-
-  • 4K режим (если включен в подписке) — лучше включить для финала.
-
-═══════════════════════════════════════════════════════════════════════
+6. ГЛАВНЫЙ КОСЯК, КОТОРЫЙ НАШЛИ ПРИ ПОВТОРНОМ АНАЛИЗЕ
+Старый подход был слишком мягкий по фону.
+Правильный подход для твоих футболок:
+- балкон = locked scene
+- print = finished graphic asset
+- никакой свободы менять детали

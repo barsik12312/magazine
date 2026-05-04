@@ -1,76 +1,57 @@
-Generate a macro close-up photo of the inner neckline tag of the SAME white oversized cotton t-shirt from the previous shots in this chat.
+Generate one photorealistic 1:1 macro close-up of the inner neckline tag of the same white oversized cotton t-shirt from the product series.
 
-═══════════════════════════════════════════════════════════════════════
-THE TAG (woven fabric label):
-═══════════════════════════════════════════════════════════════════════
+OBJECTIVE:
+Create a believable marketplace detail shot of the sewn inner neck label. The image should feel like a real macro product photo from the same garment, not a graphic mockup.
 
-A small rectangular woven white fabric tag sewn into the back of the
-neckline. Composition (top to bottom):
+TAG CONSTRUCTION:
+- small white woven fabric label sewn into the inside back neckline
+- realistic stitching attachment
+- slight natural curve or fold in the tag
+- surrounding white ribbed collar visible
+- surrounding cotton jersey visible
+- realistic woven texture on the tag itself
 
-- LINE 1 (largest): the brand name "FUCK GIVENCHY" — heavy bold black
-  sans-serif, perfectly legible, exact spelling
-- LINE 2 (smaller): size "M"
-- LINE 3 (smaller): "100% COTTON"
-- LINE 4 (smaller): "MADE IN PORTUGAL"
-- LINE 5 (very small icons in a row): standard care symbols — machine
-  wash 30°, do not bleach, tumble dry low, cool iron
+TEXT ON TAG:
+Target text hierarchy:
+- main brand line: FUCK GIVENCHY
+- size line: M
+- material line: 100% COTTON
+- origin line: MADE IN PORTUGAL
+- small care symbols row below
 
-⚠️ The brand name MUST be spelled EXACTLY as: "FUCK GIVENCHY"
-   Do NOT change it to anything else. Do NOT invent extra words.
-   Do NOT use other brand names.
+Important:
+Render the tag as realistically and legibly as possible, but do not turn it into flat vector text.
+It must still look like a real woven sewn label.
+If the model struggles with tiny text, prioritize believable label structure and sharp main brand line over overcomplicated micro-details.
 
-═══════════════════════════════════════════════════════════════════════
 COMPOSITION:
-═══════════════════════════════════════════════════════════════════════
+- macro crop focused on inner neckline area
+- tag is the sharpest element in the frame
+- collar and surrounding fabric slightly softer but still realistic
+- square 1:1 crop
 
-- The tag sits inside the back of the neckline, visible because the
-  collar is slightly folded back to reveal it
-- The shirt is on a hanger (same scene continuity as previous shots)
-  but the camera is much closer — macro shot of just the tag and
-  surrounding collar
-- Tag is slightly creased/curved (real fabric tag, not flat-lay)
-- Surrounding cotton fabric of the t-shirt collar visible as soft
-  out-of-focus white texture
+LIGHTING:
+- soft natural daylight
+- subtle shadowing
+- realistic macro contrast
+- no flashy studio glam lighting
 
-═══════════════════════════════════════════════════════════════════════
-CAMERA & TECHNICAL:
-═══════════════════════════════════════════════════════════════════════
+CAMERA / LOOK:
+- macro product photo
+- sharp woven texture
+- realistic textile detail
+- no fake CGI perfection
+- no excessive blur on the main text line
 
-- 100mm macro equivalent
-- f/4 aperture
-- Razor-sharp focus on the tag, slight bokeh on surrounding fabric
-- Aspect ratio: 1:1 square
-- Soft natural daylight, very subtle shadow on the tag
-- Color temperature: 5500K
+NEGATIVE / DO NOT INCLUDE:
+- do not add unrelated extra text blocks
+- do not invent random brand names
+- do not make the label float unnaturally
+- do not add stains or damage
+- do not turn the label into a flat digital overlay
+- no gibberish if avoidable
+- no watermarks
+- no UI overlays
 
-═══════════════════════════════════════════════════════════════════════
-QUALITY:
-═══════════════════════════════════════════════════════════════════════
-
-- Photorealistic macro shot
-- The text on the tag must be PERFECTLY LEGIBLE — sharp, no blur, no
-  weird letter shapes
-- Realistic woven fabric texture on both the tag and the surrounding
-  cotton (visible threads at this magnification)
-- Realistic light fall-off and ambient occlusion
-- Natural color — no oversaturation
-
-═══════════════════════════════════════════════════════════════════════
-NEGATIVE — DO NOT INCLUDE:
-═══════════════════════════════════════════════════════════════════════
-
-- Do NOT invent extra text or random words
-- Do NOT use brand names other than "FUCK GIVENCHY"
-- Do NOT add fake care symbols outside the standard set
-- Do NOT blur or warp the brand name (it must be sharp)
-- Do NOT generate gibberish text — every letter must be a real letter
-- Do NOT add stains, defects, or wear on the tag
-- No watermarks, no signatures
-
-═══════════════════════════════════════════════════════════════════════
 OUTPUT:
-═══════════════════════════════════════════════════════════════════════
-
-One photorealistic 1:1 square macro shot of the tag with crisp legible
-text. If the text is not perfectly correct on the first attempt, please
-re-render with the exact spelling "FUCK GIVENCHY".
+One photorealistic square macro detail shot of the sewn inner neckline label, believable as a real garment detail photo from the same t-shirt series.

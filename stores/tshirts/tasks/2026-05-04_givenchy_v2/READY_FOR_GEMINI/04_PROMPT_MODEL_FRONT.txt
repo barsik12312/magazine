@@ -1,116 +1,82 @@
-Generate a photorealistic catalog photo of a young man wearing the SAME white oversized cotton t-shirt with the same "N° FUCKS GIVENCHY" chest print from the previous shots in this chat.
+Generate one photorealistic 4:5 catalog photo of a young man wearing the same white oversized cotton t-shirt from the product series, shown from the front.
 
-REFERENCE IMAGE (new):
-- Image 1 = a screenshot showing a young man wearing a similar oversized
-  white t-shirt with a small chest print, baggy light blue jeans, on a
-  plain white studio background. Use this image for: model age range,
-  body type, pose, framing, garment fit, and overall styling.
-  Ignore any UI overlays (Avito text, buttons) — they are not part of
-  the actual photo.
+REFERENCE IMAGES:
+- Image 1 = model pose / styling reference from marketplace screenshot
+- Image 2 = exact front print graphic
+- Image 3 = front print placement mockup
+- Image 4 = real front hanger garment reference in the balcony scene
 
-═══════════════════════════════════════════════════════════════════════
+OBJECTIVE:
+Create a clean on-model front view that still feels like the exact same physical t-shirt from the hanger shots. The key priority is garment continuity and print fidelity.
+
 MODEL:
-═══════════════════════════════════════════════════════════════════════
+- young man around early 20s
+- slim athletic build
+- dark hair
+- natural proportions
+- no celebrity look
+- no heavy fashion glamour
+- neutral expression
+- face not dominant in the frame
+- use the model reference for general pose family, styling, crop, and body proportions
 
-- Young man, ~22-25 years old
-- Slim athletic build (not muscular, natural proportions)
-- Short dark brown hair, slightly messy / natural texture
-- Light skin tone, clean complexion
-- No tattoos, no piercings, no jewelry
-- Face: partially visible — frame shows from collarbone or chin level
-  upward to mid-forehead. We do NOT need a specific face — keep the
-  face subtle / partly cropped, similar to image 1
-- Expression: neutral, calm, no smile
+GARMENT CONTINUITY:
+This must be the same white oversized t-shirt from the hanger shots:
+- same white tone
+- same collar shape
+- same oversized cut
+- same fabric weight
+- same drape quality
+- same hem logic
 
-═══════════════════════════════════════════════════════════════════════
-POSE & FRAMING (match image 1):
-═══════════════════════════════════════════════════════════════════════
+FRONT PRINT / GRAPHIC TRANSFER (CRITICAL):
+The front print reference is a finished graphic asset.
+Do not recreate it as newly generated text.
+Transfer it visually and preserve:
+- same glyph shapes
+- same composition
+- same spacing
+- same integrated logo element
+- same strike-through details
+- same placement logic from image 3
 
-- Standing relaxed, slight contrapposto
-- Both arms naturally at sides, slight bend at elbows
-- Body slightly angled (not perfectly straight to camera)
-- Framed from about mid-thigh up to the chin / lower nose
-- T-shirt clearly visible across the entire chest area
-- Aspect ratio: 4:5 vertical
+The print on-body must feel like the same print as the hanger shot, only slightly affected by natural body curvature and fabric tension.
+Do not shrink it. Do not move it. Do not redesign it.
 
-═══════════════════════════════════════════════════════════════════════
-T-SHIRT (CONTINUITY — match the previous shots in this chat):
-═══════════════════════════════════════════════════════════════════════
+STYLING:
+- light blue relaxed jeans similar to the reference
+- simple clean footwear if visible
+- minimal styling
+- no accessories unless already present in the reference logic
 
-- Same white oversized cotton crew-neck t-shirt
-- Same chest print: "N° FUCKS GIVENCHY" with CC inside the U of FUCKS
-  and the "CHY" of GIVENCHY crossed out
-- Print is on the chest, ~20 cm wide, centered
-- Print follows fabric naturally where it stretches over the body —
-  slight distortion at the chest, but letters remain legible
-- Realistic cotton drape: shirt hangs loose with natural wrinkles
-  where fabric meets the body
-
-⚠️ The print MUST match the version from the previous front-on-hanger
-   shot. Do NOT change the spelling, do not move the print, do not
-   resize it dramatically.
-
-═══════════════════════════════════════════════════════════════════════
-PANTS & SHOES:
-═══════════════════════════════════════════════════════════════════════
-
-- Light blue baggy / wide-leg jeans, slightly cropped at the ankle,
-  light wash with natural fading
-- Plain white minimal sneakers (only top of shoes visible if framed)
-
-═══════════════════════════════════════════════════════════════════════
 BACKGROUND:
-═══════════════════════════════════════════════════════════════════════
+- clean studio-like catalog background
+- plain light background, minimal distraction
+- no random props
 
-- Clean plain white seamless studio background (no shadows, no texture)
-- Subtle very soft shadow under the model for grounding (not harsh)
-
-═══════════════════════════════════════════════════════════════════════
 LIGHTING:
-═══════════════════════════════════════════════════════════════════════
+- soft clean commercial catalog light
+- realistic skin and fabric rendering
+- not glossy fashion-magazine lighting
 
-- Soft even studio lighting from slightly above and slightly to the left
-- Subtle fill from right to avoid hard shadows on the right side of body
-- Color temperature: 5500K daylight neutral
-- Skin tone natural, no warm or cool cast
+CAMERA / LOOK:
+- 4:5 vertical
+- realistic catalog framing
+- chest area and print clearly readable
+- natural proportions
+- realistic cotton texture
 
-═══════════════════════════════════════════════════════════════════════
-CAMERA & TECHNICAL:
-═══════════════════════════════════════════════════════════════════════
+NEGATIVE / DO NOT INCLUDE:
+- do not change the front print artwork
+- do not change print placement
+- do not turn the model glamorous or luxury-editorial
+- do not add jewelry, watches, hats, sunglasses
+- do not create anatomy errors
+- no AI artifacts
+- no extra fingers
+- no melted hair
+- no UI overlays
+- no watermarks
 
-- 50mm equivalent, f/2.8
-- Eye-level, slightly below chest height
-- Aspect ratio: 4:5 vertical
-- Light depth of field: body sharp, background uniformly white
-
-═══════════════════════════════════════════════════════════════════════
-QUALITY:
-═══════════════════════════════════════════════════════════════════════
-
-- Photorealistic, like a real fashion catalog photo
-- Realistic skin texture: natural pores, subtle imperfections, no
-  airbrush, no plastic look
-- Realistic hair strands, individual hair detail visible
-- Realistic cotton drape with proper wrinkles where the t-shirt meets
-  the body
-- Natural body proportions, no stylization
-
-═══════════════════════════════════════════════════════════════════════
-NEGATIVE — DO NOT INCLUDE:
-═══════════════════════════════════════════════════════════════════════
-
-- Do NOT change the chest print
-- Do NOT add jewelry, watches, glasses, hats, or accessories
-- Do NOT make the model look glamour-style — keep it natural / casual
-- No 6 fingers, extra limbs, warped facial features, melted hair
-- No oversaturation, no HDR, no Instagram filter, no "studio glamour" lighting
-- No watermarks, no UI overlays, no text outside the t-shirt
-- No mirror reflections, no other people in the frame
-- Do NOT show the full face in detail — keep face partial / cropped
-
-═══════════════════════════════════════════════════════════════════════
 OUTPUT:
-═══════════════════════════════════════════════════════════════════════
-
-One photorealistic 4:5 vertical fashion catalog photo of the model
-wearing the t-shirt from previous shots, on a clean white background.
+One photorealistic 4:5 front-view on-model catalog image with strong garment continuity to the hanger shots and faithful front print transfer.
