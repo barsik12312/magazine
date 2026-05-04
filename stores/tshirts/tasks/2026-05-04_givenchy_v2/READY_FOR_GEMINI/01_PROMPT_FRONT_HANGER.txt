@@ -1,0 +1,105 @@
+Generate a photorealistic e-commerce product photo of a white oversized cotton crew-neck t-shirt hanging on a black plastic clothes hanger.
+
+REFERENCE IMAGES (very important):
+- Image 1 = the EXACT print design that must appear on the chest (PNG with black text on white)
+- Image 2 = the layout mockup showing where the print sits on the t-shirt
+- Image 3 = a real photo of a similar oversized white t-shirt in the EXACT scene I want (wardrobe / window / curtain)
+- Image 4 = a closer real photo for fabric texture and t-shirt fit reference
+
+═══════════════════════════════════════════════════════════════════════
+PRINT (CRITICAL — match image 1 exactly):
+═══════════════════════════════════════════════════════════════════════
+
+The chest print is exactly the design in image 1. Reproduce EVERY detail:
+- Top line: "N°" in heavy bold sans-serif, slightly smaller
+- Middle line: "FUCKS" in very heavy bold sans-serif, with a CC-style logo
+  embedded inside the U (two interlocking C-shapes overlapping vertically,
+  Chanel-style)
+- Bottom line: "GIVENCHY" in lighter weight, with a diagonal strikethrough
+  line crossing out the last 3 letters "CHY"
+- All text in solid BLACK on a WHITE shirt
+- Print width: ~20 cm (occupying the chest area, centered horizontally,
+  positioned just below the collar)
+- Print is screen-printed: matte ink, NO halo, NO gloss, NO 3D bevel
+- Print follows fabric naturally: slight wrinkles distort it where the
+  shirt creases, but letters remain perfectly legible
+
+⚠️ DO NOT add extra letters, do not change the spelling, do not insert
+   stylized characters not present in image 1. Keep "FUCKS" and "GIVENCHY"
+   spelled exactly as shown.
+
+═══════════════════════════════════════════════════════════════════════
+T-SHIRT (match images 2, 3, 4):
+═══════════════════════════════════════════════════════════════════════
+
+- White, oversized, slightly boxy cut
+- 100% cotton heavyweight
+- Crew-neck with subtle ribbed collar
+- Short sleeves, drop shoulders
+- Slightly creased natural drape (not too smooth, not too wrinkled)
+- Fabric: realistic cotton weave visible up close, soft matte surface
+
+═══════════════════════════════════════════════════════════════════════
+HANGER (match image 3):
+═══════════════════════════════════════════════════════════════════════
+
+- Black plastic clothes hanger, slim profile
+- Hooked on a white window handle / window frame edge
+- T-shirt hangs naturally from the hanger, slight asymmetry is fine
+
+═══════════════════════════════════════════════════════════════════════
+BACKGROUND (match image 3 EXACTLY):
+═══════════════════════════════════════════════════════════════════════
+
+- Dark emerald velvet curtain on the back wall, slightly textured
+- Window frame with white profile visible at the top (where the hanger
+  is hooked)
+- Green potted plant (fiddle leaf fig style) on the right side
+- Dark metal shelf-ladder partially visible on the right edge
+- Wooden parquet floor visible at the bottom edge
+- Soft natural daylight coming from the window on the left
+- Subtle shadow of the t-shirt on the curtain
+
+═══════════════════════════════════════════════════════════════════════
+CAMERA & TECHNICAL:
+═══════════════════════════════════════════════════════════════════════
+
+- Shot on iPhone 15 Pro main camera equivalent (26mm)
+- Eye-level, slightly angled to show the t-shirt in 3/4 perspective
+- Light depth of field: t-shirt sharp, background slightly soft
+- Aspect ratio: 4:5 vertical (portrait, marketplace-friendly)
+- Color temperature: 5500K (neutral daylight)
+- ISO equivalent: low, no visible noise
+
+═══════════════════════════════════════════════════════════════════════
+QUALITY REQUIREMENTS:
+═══════════════════════════════════════════════════════════════════════
+
+- Photorealistic, indistinguishable from a real iPhone photo
+- Highest possible resolution and sharpness on the t-shirt and print
+- Realistic cotton fabric texture: visible weave, soft drape, natural
+  wrinkles at shoulders and bottom hem
+- Realistic shadows and ambient occlusion under the hanger
+- Natural color palette — no oversaturation, no HDR, no Instagram filter
+
+═══════════════════════════════════════════════════════════════════════
+NEGATIVE — DO NOT INCLUDE:
+═══════════════════════════════════════════════════════════════════════
+
+- Do NOT add extra letters or symbols not present in image 1
+- Do NOT change the spelling of "FUCKS", "GIVENCHY", or "N°"
+- Do NOT add brand logos other than the CC inside the U of "FUCKS"
+- Do NOT add visible stitching seams beyond standard cotton t-shirt
+- Do NOT add a person, model, mannequin, or hands
+- Do NOT add text outside the t-shirt area (no signs, no labels on hanger)
+- Do NOT add watermarks, signatures, or any UI overlays
+- NO AI artifacts: no warped letters, no melted edges, no extra fingers
+  (no model in this shot anyway)
+- NO oversaturation, NO plastic-y skin or fabric, NO HDR look
+
+═══════════════════════════════════════════════════════════════════════
+OUTPUT:
+═══════════════════════════════════════════════════════════════════════
+
+One photorealistic image, 4:5 vertical, ready for an e-commerce product
+listing. Maximum quality.

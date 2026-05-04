@@ -1,0 +1,94 @@
+Generate the BACK view of the SAME white oversized cotton crew-neck t-shirt from the previous front shot, hanging on the same black plastic hanger in the same wardrobe scene.
+
+REFERENCE IMAGES (new for this shot):
+- Image 1 = layout mockup showing the back design (a vertical surfboard
+  shape with parallel stripes inside, and a small CC logo at the bottom)
+- Image 2 = a real photo of the same wardrobe scene from the back angle,
+  showing how the t-shirt hangs from this perspective
+
+KEEP from the previous shot in this chat:
+- Same exact white oversized cotton t-shirt (same color, same fit, same fabric)
+- Same exact wardrobe scene (green velvet curtain, hanger on window handle,
+  potted plant on right, metal shelf-ladder, wooden floor)
+- Same lighting (soft natural daylight from the window)
+- Same camera angle equivalent and aspect ratio (4:5 vertical, iPhone 15 Pro look)
+
+═══════════════════════════════════════════════════════════════════════
+BACK PRINT (CRITICAL — match image 1 exactly):
+═══════════════════════════════════════════════════════════════════════
+
+The back print is centered between the shoulder blades. It consists of:
+
+- A VERTICAL SURFBOARD shape (rounded-pointed at top, rounded-pointed at
+  bottom, longer than wide — typical surfboard silhouette)
+- Inside the surfboard: THREE parallel vertical black stripes running
+  from top to bottom (about 1/3 of the surfboard width each, with thin
+  white gaps between them)
+- At the bottom of the surfboard, just before the rounded tip: a small
+  CC-style logo (two interlocking C shapes, Chanel-style)
+- The surfboard outline is a clean black silhouette / contour
+- Print color: solid BLACK on the white shirt
+- Print height: ~25 cm (extending from upper-back to mid-back area)
+- Centered between the shoulder blades
+
+The print should be screen-printed: matte black ink, no halo, no gloss.
+It follows the natural fabric drape (slight wrinkles cause subtle
+distortion) but remains clean and clearly recognizable as a surfboard
+with internal stripes.
+
+⚠️ DO NOT replace the surfboard with another shape. DO NOT add extra
+   text. DO NOT add brand logos beyond the small CC at the bottom of
+   the surfboard.
+
+═══════════════════════════════════════════════════════════════════════
+T-SHIRT BACK DETAILS:
+═══════════════════════════════════════════════════════════════════════
+
+- Same fabric, same color, same cut as the front shot
+- Visible inner neckline ribbing on the back of the collar
+- The small woven brand tag should be visible just under the back of
+  the collar (small white rectangle, blurred is fine for this shot)
+- Natural fabric drape from the hanger
+
+═══════════════════════════════════════════════════════════════════════
+SCENE (same as front shot — match image 2):
+═══════════════════════════════════════════════════════════════════════
+
+- Dark emerald velvet curtain background
+- Black plastic hanger on white window handle
+- Green potted plant on the right
+- Dark metal shelf-ladder on the right edge
+- Wooden parquet floor at bottom
+- Soft natural daylight from the left
+
+═══════════════════════════════════════════════════════════════════════
+CAMERA & TECHNICAL:
+═══════════════════════════════════════════════════════════════════════
+
+- iPhone 15 Pro main camera equivalent (26mm)
+- Eye-level, slightly angled view of the t-shirt back
+- Light depth of field: t-shirt sharp, background slightly soft
+- Aspect ratio: 4:5 vertical
+- Color temperature: 5500K
+- Match the look of the previous front shot in this chat
+
+═══════════════════════════════════════════════════════════════════════
+NEGATIVE — DO NOT INCLUDE:
+═══════════════════════════════════════════════════════════════════════
+
+- Do NOT change the surfboard design (no different shapes, no extra
+  decorations, no different stripes count)
+- Do NOT add text on the back
+- Do NOT change the t-shirt color or fit from the previous shot
+- Do NOT change the wardrobe scene
+- Do NOT add a person, model, or mannequin
+- No AI artifacts, no warped fabric, no melted edges
+- No watermarks, no signatures
+
+═══════════════════════════════════════════════════════════════════════
+OUTPUT:
+═══════════════════════════════════════════════════════════════════════
+
+One photorealistic 4:5 vertical image, matching the style and scene of
+the previous front shot but showing the back of the t-shirt with the
+surfboard print.

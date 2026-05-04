@@ -1,0 +1,31 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Local task copies (если используешь --copy-to-desktop)
+# не коммитим локальные копии заданий
+Tasks/
+
+# Временные эксперименты — не для общего репо
+scratch/
+tmp/
+
+# Большие raw video / archives
+*.mov
+*.mp4
+*.zip
+*.tar
+*.tar.gz

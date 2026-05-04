@@ -1,0 +1,76 @@
+Generate a macro close-up photo of the inner neckline tag of the SAME white oversized cotton t-shirt from the previous shots in this chat.
+
+═══════════════════════════════════════════════════════════════════════
+THE TAG (woven fabric label):
+═══════════════════════════════════════════════════════════════════════
+
+A small rectangular woven white fabric tag sewn into the back of the
+neckline. Composition (top to bottom):
+
+- LINE 1 (largest): the brand name "FUCK GIVENCHY" — heavy bold black
+  sans-serif, perfectly legible, exact spelling
+- LINE 2 (smaller): size "M"
+- LINE 3 (smaller): "100% COTTON"
+- LINE 4 (smaller): "MADE IN PORTUGAL"
+- LINE 5 (very small icons in a row): standard care symbols — machine
+  wash 30°, do not bleach, tumble dry low, cool iron
+
+⚠️ The brand name MUST be spelled EXACTLY as: "FUCK GIVENCHY"
+   Do NOT change it to anything else. Do NOT invent extra words.
+   Do NOT use other brand names.
+
+═══════════════════════════════════════════════════════════════════════
+COMPOSITION:
+═══════════════════════════════════════════════════════════════════════
+
+- The tag sits inside the back of the neckline, visible because the
+  collar is slightly folded back to reveal it
+- The shirt is on a hanger (same scene continuity as previous shots)
+  but the camera is much closer — macro shot of just the tag and
+  surrounding collar
+- Tag is slightly creased/curved (real fabric tag, not flat-lay)
+- Surrounding cotton fabric of the t-shirt collar visible as soft
+  out-of-focus white texture
+
+═══════════════════════════════════════════════════════════════════════
+CAMERA & TECHNICAL:
+═══════════════════════════════════════════════════════════════════════
+
+- 100mm macro equivalent
+- f/4 aperture
+- Razor-sharp focus on the tag, slight bokeh on surrounding fabric
+- Aspect ratio: 1:1 square
+- Soft natural daylight, very subtle shadow on the tag
+- Color temperature: 5500K
+
+═══════════════════════════════════════════════════════════════════════
+QUALITY:
+═══════════════════════════════════════════════════════════════════════
+
+- Photorealistic macro shot
+- The text on the tag must be PERFECTLY LEGIBLE — sharp, no blur, no
+  weird letter shapes
+- Realistic woven fabric texture on both the tag and the surrounding
+  cotton (visible threads at this magnification)
+- Realistic light fall-off and ambient occlusion
+- Natural color — no oversaturation
+
+═══════════════════════════════════════════════════════════════════════
+NEGATIVE — DO NOT INCLUDE:
+═══════════════════════════════════════════════════════════════════════
+
+- Do NOT invent extra text or random words
+- Do NOT use brand names other than "FUCK GIVENCHY"
+- Do NOT add fake care symbols outside the standard set
+- Do NOT blur or warp the brand name (it must be sharp)
+- Do NOT generate gibberish text — every letter must be a real letter
+- Do NOT add stains, defects, or wear on the tag
+- No watermarks, no signatures
+
+═══════════════════════════════════════════════════════════════════════
+OUTPUT:
+═══════════════════════════════════════════════════════════════════════
+
+One photorealistic 1:1 square macro shot of the tag with crisp legible
+text. If the text is not perfectly correct on the first attempt, please
+re-render with the exact spelling "FUCK GIVENCHY".
