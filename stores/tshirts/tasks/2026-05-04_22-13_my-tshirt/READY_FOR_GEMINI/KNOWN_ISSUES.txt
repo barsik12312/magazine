@@ -1,0 +1,85 @@
+═══════════════════════════════════════════════════════════════════════
+  ИЗВЕСТНЫЕ ПРОБЛЕМЫ NANO BANANA PRO И КАК ИХ ОБОЙТИ (edit-mode)
+═══════════════════════════════════════════════════════════════════════
+
+ПРОБЛЕМА 1: Модель пересоздаёт сцену вместо edit поверх исходника
+─────────────────────────────────────────────────────────────────────
+  Это самая частая беда у генеративных моделей: вместо того чтобы
+  изменить только принт и бирку, модель ре-рендерит весь кадр. Тогда
+  фон, ткань, свет — всё «плывёт».
+  Решение: дописать в чат:
+    "garment_front.* (or garment_back.*) is the BASE IMAGE. Modify
+    only the chest/back print and the inner-collar tag. Preserve the
+    rest of the image pixel-by-pixel from the base. Do not re-synthesize
+    the scene, fabric, hanger, or lighting."
+
+ПРОБЛЕМА 2: Старый принт остаётся видимым / не до конца стёрт
+─────────────────────────────────────────────────────────────────────
+    "Erase the existing chest/back print COMPLETELY before applying
+    the new one. Reconstruct the clean cotton fabric in that area
+    using the surrounding folds, light, and shadow. There must be NO
+    ghost or remnant of the previous artwork."
+
+ПРОБЛЕМА 3: Маленький принт-«бирка» сместили или убрали (только если он есть)
+─────────────────────────────────────────────────────────────────────
+  Напоминание: "бирка" в нашей системе — это маленький второй принт
+  на лицевой стороне футболки прямо под горловиной (не внутренняя
+  нашивка). Если в задании print_3_tag нет, бирки на финале быть и
+  не должно. Если она есть, и модель её сместила — пиши:
+    "Keep the small under-collar tag print on the FRONT of the
+    shirt, centered just below the ribbed collar, in the EXACT same
+    size and position. The artwork is replaced by print_3_tag.*; its
+    physical location and scale do not change. It must be visibly
+    smaller than the main chest print."
+
+ПРОБЛЕМА 4: Принт ломается как текст / буквы перерисованы
+─────────────────────────────────────────────────────────────────────
+    "Treat print_1_front.* / print_2_back.* / print_3_tag.* as
+    finished graphic design assets. Do not re-typeset, redesign, or
+    respell any letter. Transfer the artwork visually as if applying
+    a screen-print transfer onto cotton."
+  Если 3-4 итерации не помогают — Photopea-фолбэк:
+    1. https://www.photopea.com
+    2. Открой результат + PNG принта
+    3. Перенеси принт как слой → Blend Mode "Multiply"
+    4. Ctrl+T — подгони размер по груди/спине
+    5. Filter → Distort → Displacement Map (футболку как displace-карту)
+    6. Save as PNG
+
+ПРОБЛЕМА 5: На фото-на-модели принт / бирка отличаются от шагов 01/02
+─────────────────────────────────────────────────────────────────────
+    "result_front.* / result_back.* is the source of truth for the
+    garment. The chest print, back print, and the small under-collar
+    tag print (if it exists in result_front.*) must match it exactly:
+    same size, same position, same artwork. If result_front.* has no
+    tag print, do not invent one."
+
+ПРОБЛЕМА 6: Лицо модели слишком яркое / похоже на знаменитость
+─────────────────────────────────────────────────────────────────────
+    "Make the model's face less prominent — frame higher, partial
+    face, hair over face, or looking down. Focus on the garment, not
+    on a specific identifiable face."
+
+ПРОБЛЕМА 7: AI-артефакты (6 пальцев, искажения, melted edges)
+─────────────────────────────────────────────────────────────────────
+  Перегенерируй. Если упорно — попроси сменить позу / ракурс или
+  добавь в промпт:
+    "No AI artifacts: hands must have exactly 5 fingers each, no
+    extra limbs, no melted facial features."
+
+═══════════════════════════════════════════════════════════════════════
+  ОБЩИЕ ПРИНЦИПЫ
+═══════════════════════════════════════════════════════════════════════
+
+  • НЕ начинай новый чат на каждый ракурс — Pro помнит контекст
+  • Делай ракурсы последовательно в одном чате
+  • Если 3-4 итерации не помогают — переходи в Photopea
+  • Tshirts edit-mode: garment_front/back = canvas, prints = assets
+  • Балкон-референсы (scene_*) = детали-память, НЕ замена сцены
+  • Бирка = маленький принт под горловиной СПЕРЕДИ; опциональна
+    (если нет print_3_tag — её нет ни на 01, ни на 04, ни в шаге 03)
+  • Текст и логотипы — слабая зона ИИ, считай нормой ручную доработку
+  • Сохраняй промежуточные версии (иногда 1-я генерация лучше 4-й)
+  • 4K режим (если есть) — лучше включить для финала
+
+═══════════════════════════════════════════════════════════════════════
