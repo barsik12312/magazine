@@ -346,10 +346,20 @@ def pack_refs(c: Classified, refs_dir: Path, ttype: str) -> dict[str, list[Path]
     put(c.model_head_back, "model_head_back", "model_head_back")
     put(c.design_sketch, "design_sketch", "design_sketch")
 
-    # сцена: либо переданные backgrounds, либо балкон-дефолт для футболок
+    # сцена: либо переданные backgrounds, либо ОДИН балкон-дефолт для футболок.
+    # Раньше копировались все 5 файлов из balcony_template/ — это создавало
+    # ощущение "5 копий одной сцены". Теперь по дефолту только 01_master_wide,
+    # остальные подключаются только если пользователь явно положил несколько
+    # фоновых файлов в папку.
     scenes = c.backgrounds[:]
     if not scenes and ttype == "tshirt" and BALCONY_TEMPLATE_DIR.exists():
-        scenes = list_files(BALCONY_TEMPLATE_DIR)
+        all_balcony = list_files(BALCONY_TEMPLATE_DIR)
+        master = next((p for p in all_balcony if "master" in p.stem.lower()),
+                      None)
+        if master is not None:
+            scenes = [master]
+        elif all_balcony:
+            scenes = [all_balcony[0]]
     for i, src in enumerate(scenes, 1):
         if src.suffix.lower() not in IMAGE_EXTS:
             continue
@@ -446,17 +456,18 @@ Treat garment_back.* as the canvas. Keep everything intact except for ONE region
 
 REFERENCE IMAGES (attach in this order):
 - garment_back.*   ← BASE / canvas
-- print_2_back.*   ← new back print (finished graphic asset)
+- print_2_back.*   ← OPTIONAL — new back print (finished graphic asset). May be ABSENT for this task. If absent, the back of the t-shirt must remain CLEAN cotton with NO print.
 - garment_tag.*    ← optional reference for fabric / collar close-up
 - scene_*.*        ← detail-memory references of the balcony scene (memory only, not a scene donor)
-- design_sketch.*  ← OPTIONAL black-and-white front+back collage / sketch from the designer. DESIGN-INTENT REFERENCE ONLY. Do NOT extract pixels from it. Do NOT apply it to the shirt. The real back print is print_2_back.* — that is the only source of printed graphics. The sketch only shows rough overall vision. The neck-label "бирка" is never drawn on the sketch and is also not visible on the OUTER back of the shirt anyway.
+- design_sketch.*  ← OPTIONAL black-and-white front+back collage / sketch from the designer. DESIGN-INTENT REFERENCE ONLY. Do NOT extract pixels from it. Do NOT apply it to the shirt. The real back print (if any) is print_2_back.*. The sketch only shows rough overall vision. The neck-label "бирка" is never drawn on the sketch and is also not visible on the OUTER back of the shirt anyway.
 
 OBJECTIVE — DO ALL IN ONE PASS:
 1. Erase the existing back artwork on the OUTER back of the t-shirt in garment_back.* completely. Reconstruct clean cotton fabric there with the same folds, light, and shadow as the rest of the shirt.
-2. Apply print_2_back.* onto the upper back / centered placement area, faithfully, as a matte screen-print transfer. Same scale and position as the original back print in garment_back.*. Preserve every detail of the artwork.
+2. IF print_2_back.* IS PROVIDED in the references list: apply print_2_back.* onto the upper back / centered placement area, faithfully, as a matte screen-print transfer. Same scale and position as the original back print in garment_back.*. Preserve every detail of the artwork.
+   IF print_2_back.* IS NOT PROVIDED in the references list (i.e. this task has no new back print): STOP after step 1. The back of the t-shirt must remain CLEAN cotton with NO print whatsoever. Do not invent, hallucinate, copy, or carry over any print from print_1_front.* / print_3_tag.* / design_sketch.* / the original red F1 graphic / any other source. The back stays as plain cotton in the same color as the rest of the shirt.
 3. Do not show any neck-label print on the outer back of the neckline. The "бирка" is on the INNER surface of the back of the neckline and is invisible from this outer back view. The outer back of the neckband should be plain cotton (or the same neckline detail as in garment_back.* — no invented logos, no extra graphics).
 
-PRINT BEHAVIOUR:
+PRINT BEHAVIOUR (only applies when print_2_back.* is provided):
 - print_2_back.* is a finished graphic design asset, not text to be re-rendered.
 - Preserve composition, glyph shapes, internal structure, line counts, and lower elements exactly.
 
@@ -488,12 +499,13 @@ NEGATIVE / DO NOT INCLUDE:
 - do not change print artwork meaning or glyphs
 - do NOT add any neck-label print on the OUTER back of the neckband — the "бирка" lives on the INNER surface and is not visible from outside on the back
 - do NOT migrate the inner neck-label print to the outside of the shirt
+- do NOT carry over print_1_front.* (the chest print) onto the back. If there is no print_2_back.*, the back stays clean — never duplicate the front print on the back.
 - no model, mannequin, hands
 - no AI artifacts, melted letters, warped fabric, random decor additions
 - no watermarks, no UI overlays
 
 OUTPUT:
-One photorealistic image in the same aspect ratio and framing as garment_back.*. Back print replaced; everything else preserved 1:1; no neck-label print visible on the outer back.
+One photorealistic image in the same aspect ratio and framing as garment_back.*. If print_2_back.* was provided: the back print is replaced with the new artwork. If print_2_back.* was NOT provided: the back is clean cotton with no print at all. Everything else preserved 1:1 in both cases; no neck-label print visible on the outer back.
 """,
     "03_PROMPT_TAG": """\
 This is a photorealistic close-up shot of the small NECK-LABEL PRINT ("бирка") on the INNER (wrong-side) surface of the back of the t-shirt's neckline.
@@ -620,11 +632,11 @@ REFERENCE IMAGES (attach in this order):
 - model_head_back.*   ← head / hair identity-lock from behind (REQUIRED if provided; this is the EXACT back of the head the model must have)
 - model_back.*        ← full-body back-view pose / styling reference (optional)
 - model_head_front.*  ← fidelity reinforcement so the same person identity is preserved across front/back shots (optional)
-- print_2_back.*      ← back print (finished graphic asset, fidelity reinforcement)
+- print_2_back.*      ← OPTIONAL — back print (finished graphic asset, fidelity reinforcement). May be ABSENT for this task. If absent, result_back.* shows a clean back, and so must this on-model shot.
 - model_*.*           ← generic model reference if no model_back.* (optional fallback)
 
 OBJECTIVE:
-Back-view on-model companion image for the same t-shirt series. Must preserve the same garment identity, same fit family, and same back artwork as result_back.*.
+Back-view on-model companion image for the same t-shirt series. Must preserve the same garment identity, same fit family, and same back artwork (or lack thereof) as result_back.*.
 
 MODEL IDENTITY (HIGH PRIORITY):
 - If model_head_back.* is provided: the back of the head must match model_head_back.* exactly — same hair length, same hair colour, same hair texture, same hairline shape, same nape area, same neck thickness. Do NOT generate a different person's hair / head from behind.
@@ -637,9 +649,10 @@ result_back.* is the source of truth for the garment.
 Preserve: same color tone, same oversized cut, same collar and shoulder proportions, same fabric behavior, same drape quality, same overall shape, same back print size and placement.
 
 BACK PRINT / GRAPHIC FIDELITY:
-The back print must match result_back.* and print_2_back.* exactly. Do not redesign, simplify, move, or add extra text. Allow only natural body / fabric-following distortion.
+- IF print_2_back.* is provided AND result_back.* shows a back print: the back print must match result_back.* and print_2_back.* exactly. Do not redesign, simplify, move, or add extra text. Allow only natural body / fabric-following distortion.
+- IF print_2_back.* is NOT provided AND result_back.* shows a clean back (no print): the model's back must also remain a clean shirt with NO back print. Do NOT invent a back print. Do NOT carry print_1_front.* (the chest print) onto the back. The back stays plain cotton, just like in result_back.*.
 
-FABRIC INTEGRATION (CRITICAL — print must look INTO the cotton, not on top):
+FABRIC INTEGRATION (CRITICAL — print must look INTO the cotton, not on top — applies only when there IS a back print):
 - The back print must look APPLIED INTO the cotton, not laid as a sticker. Visible cotton weave / microtexture must show THROUGH the dark areas of the print, like real screen-print ink absorbing slightly into cotton fibers.
 - The print must follow the body curvature: across the back the print bends slightly with the shoulder blades, spine curve, any fold from the model's pose. It is NOT flat. It is NOT rectangular. It does NOT shift as a block.
 - Lighting on the print matches the lighting on the shirt around it: same highlight side, same shadow side, same falloff. If part of the back is in shade, the print over that part is also slightly darker. Same for highlights.
@@ -682,15 +695,166 @@ One photorealistic 4:5 back-view on-model catalog image. The garment matches res
 }
 
 
-def make_tshirt_prompts(target: Path, has_tag: bool = True) -> int:
-    """Записывает промпты в target. Если has_tag=False, пропускает 03_PROMPT_TAG.
+# Per-step recipes: какие файлы прикреплять и что именно делает шаг.
+# Используются для генерации читаемой "шапки" промпта.
+TSHIRT_PROMPT_TITLES: dict[str, str] = {
+    "01_PROMPT_FRONT": "Футболка СПЕРЕДИ на вешалке (edit поверх реального фото)",
+    "02_PROMPT_BACK": "Футболка СЗАДИ на вешалке (edit поверх реального фото)",
+    "03_PROMPT_TAG": "Бирка КРУПНЫМ ПЛАНОМ (изнанка задней горловины)",
+    "04_PROMPT_MODEL_FRONT": "Человек СПЕРЕДИ в этой футболке",
+    "05_PROMPT_MODEL_BACK": "Человек СЗАДИ в этой футболке",
+}
+
+TSHIRT_PROMPT_BRIEFS: dict[str, str] = {
+    "01_PROMPT_FRONT": (
+        "Сотри старый грудной принт и старую бирку (видна через вырез) с "
+        "реального фото футболки спереди и нанеси новые. Фон, вешалку, "
+        "ткань, складки, свет, ракурс — НЕ ТРОГАЙ. За один прогон. "
+        "Принт должен выглядеть как настоящий screen-print: краска "
+        "впитана в волокна хлопка, не плоская наклейка."
+    ),
+    "02_PROMPT_BACK": (
+        "Сотри старый принт со спины. Если в задании есть print_2_back — "
+        "нанеси его. Если нет — оставь спину ЧИСТОЙ (плотная ткань без "
+        "принта, никаких выдумок и переноса грудного принта). Фон, "
+        "вешалку, ткань, свет — НЕ ТРОГАЙ."
+    ),
+    "03_PROMPT_TAG": (
+        "Сделай близкий макро-кадр ИЗНАНКИ ЗАДНЕЙ ЧАСТИ ГОРЛОВИНЫ с "
+        "новым принтом-биркой. Видны волокна хлопка, краска впитана в "
+        "ткань, естественный масштаб ширины горловины. Это НЕ наружный "
+        "воротник и НЕ care-нашивка."
+    ),
+    "04_PROMPT_MODEL_FRONT": (
+        "Сделай каталожный кадр МОДЕЛИ СПЕРЕДИ в той же футболке, что "
+        "получилась в шаге 01. Лицо ровно как на model_head_front, поза/"
+        "фигура — как на model_front. Грудной принт сохранить точно."
+    ),
+    "05_PROMPT_MODEL_BACK": (
+        "Сделай каталожный кадр ТОГО ЖЕ ЧЕЛОВЕКА СЗАДИ в той же "
+        "футболке, что получилась в шаге 02. Затылок/волосы ровно как на "
+        "model_head_back, поза — как на model_back. Бирку не показываем "
+        "(волосы перекрывают)."
+    ),
+}
+
+# (key_in_placed_dict, is_required, краткое описание)
+# ВАЖНО: ключи должны совпадать с ключами `placed` из pack_refs (см. функцию).
+# Например, грудной принт хранится под ключом "print_front", а не "print_1_front".
+TSHIRT_PROMPT_RECIPES: dict[str, list[tuple[str, bool, str]]] = {
+    "01_PROMPT_FRONT": [
+        ("garment_front", True, "база — реальное фото футболки спереди"),
+        ("print_front", True, "новый грудной принт (графический ассет)"),
+        ("print_tag", False, "новый принт-бирка (если есть в задании)"),
+        ("garment_tag", False, "опц. — крупный план воротника"),
+        ("scene", False, "memory reference балкона / окружения"),
+        ("design_sketch", False, "опц. — B&W эскиз дизайнера; НЕ принт, только design intent"),
+    ],
+    "02_PROMPT_BACK": [
+        ("garment_back", True, "база — реальное фото футболки сзади"),
+        ("print_back", False, "новый принт на спину (если нет — спина останется чистой)"),
+        ("garment_tag", False, "опц. — референс воротника"),
+        ("scene", False, "memory reference окружения"),
+        ("design_sketch", False, "опц. — B&W эскиз дизайнера; НЕ принт, только design intent"),
+    ],
+    "03_PROMPT_TAG": [
+        ("garment_front", True, "база — фото футболки спереди (дает память про вырез горловины)"),
+        ("print_tag", True, "новый принт-бирка (графический ассет)"),
+        ("garment_tag", False, "опц. — близкий план воротника"),
+    ],
+    "04_PROMPT_MODEL_FRONT": [
+        ("__manual__", True, "result_front.* — ТВОЙ РЕЗУЛЬТАТ ШАГА 01 (прикрепи вручную из outputs/)"),
+        ("model_head_front", False, "лицо/голова модели — identity-lock (тот же человек)"),
+        ("model_front", False, "поза/фигура модели спереди"),
+        ("model_head_back", False, "опц. — затылок (для согласованности с шагом 05)"),
+        ("print_front", False, "грудной принт — для верности воспроизведения"),
+        ("print_tag", False, "опц. — бирка (на модели не видна, но модель помнит)"),
+    ],
+    "05_PROMPT_MODEL_BACK": [
+        ("__manual__", True, "result_back.* — ТВОЙ РЕЗУЛЬТАТ ШАГА 02 (прикрепи вручную из outputs/)"),
+        ("model_head_back", False, "затылок/волосы модели — identity-lock"),
+        ("model_back", False, "поза/фигура модели сзади"),
+        ("model_head_front", False, "опц. — лицо (для согласованности с шагом 04)"),
+        ("print_back", False, "back-принт — если был в задании"),
+    ],
+}
+
+
+def _build_prompt_header(sid: str,
+                         placed: dict[str, list[Path]] | None) -> str:
+    """Собирает читаемую шапку промпта: что делаем + какие файлы прикрепить.
+
+    placed=None → шапка перечислит все возможные файлы абстрактно
+    (используется в make_tshirt_prompts когда классификация недоступна).
+    """
+    title = TSHIRT_PROMPT_TITLES.get(sid, sid)
+    brief = TSHIRT_PROMPT_BRIEFS.get(sid, "")
+    recipe = TSHIRT_PROMPT_RECIPES.get(sid, [])
+
+    lines: list[str] = []
+    bar = "═" * 71
+    lines.append(bar)
+    lines.append(f"  {sid}: {title}")
+    lines.append(bar)
+    lines.append("")
+    lines.append("ЧТО ОТ ТЕБЯ ХОТЯТ (краткое объяснение для Nano Banana Pro):")
+    lines.append(brief)
+    lines.append("")
+    lines.append("ФАЙЛЫ ДЛЯ ПРИКРЕПЛЕНИЯ К ЭТОМУ ПРОМПТУ (бери из refs/ или")
+    lines.append("из ~/Downloads, куда скрипт их продублировал):")
+
+    n = 0
+    for key, required, desc in recipe:
+        if key == "__manual__":
+            n += 1
+            tag = "ОБЯЗАТЕЛЬНО" if required else "опционально"
+            lines.append(f"  {n}) [{tag}] {desc}")
+            continue
+        files = placed.get(key, []) if placed is not None else None
+        if files:
+            for fp in files:
+                n += 1
+                tag = "ОБЯЗАТЕЛЬНО" if required else "опционально"
+                lines.append(f"  {n}) [{tag}] refs/{fp.name}  — {desc}")
+        else:
+            # файл не положили в задании
+            if required:
+                n += 1
+                lines.append(
+                    f"  {n}) [ВНИМАНИЕ — НЕ НАЙДЕН] {key}.* — {desc}. "
+                    f"Положи в input-папку и пересобери."
+                )
+            else:
+                # опциональный отсутствующий — пропускаем тихо
+                pass
+
+    lines.append("")
+    lines.append("ВАЖНО: ниже идёт длинный технический промпт. Скопируй его")
+    lines.append("ЦЕЛИКОМ (с этой шапкой) и вставь в Gemini одним сообщением")
+    lines.append("вместе с прикреплёнными файлами выше.")
+    lines.append("")
+    lines.append(bar)
+    lines.append("")
+    return "\n".join(lines)
+
+
+def make_tshirt_prompts(target: Path, has_tag: bool = True,
+                        has_back_print: bool = True,
+                        placed: dict[str, list[Path]] | None = None) -> int:
+    """Записывает промпты в target.
+
+    has_tag=False → пропускает 03_PROMPT_TAG.
+    has_back_print: пока не убираем 02 даже если нет — спина просто чистая.
+    placed: словарь refs (см. pack_refs) для построения per-step шапок.
+
     Возвращает число записанных файлов.
     """
     written = 0
     for sid, body in TSHIRT_PROMPTS.items():
         if not has_tag and sid == "03_PROMPT_TAG":
             continue
-        write_text(target / f"{sid}.txt", body)
+        header = _build_prompt_header(sid, placed)
+        write_text(target / f"{sid}.txt", header + body)
         written += 1
     return written
 
@@ -1084,8 +1248,10 @@ def main() -> int:
     # промпты. Для футболок шаг 03 (бирка-кадр) пропускаем,
     # если в задании нет print_3_tag.
     has_tag = c.print_tag is not None
+    has_back_print = c.print_back is not None
     if args.type == "tshirt":
-        make_tshirt_prompts(ready, has_tag=has_tag)
+        make_tshirt_prompts(ready, has_tag=has_tag,
+                            has_back_print=has_back_print, placed=placed)
         if not has_tag:
             scenarios = [s for s in scenarios if s.get("id") != "03_PROMPT_TAG"]
     else:
