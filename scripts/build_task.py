@@ -164,6 +164,12 @@ def classify_inputs(folder: Path) -> Classified:
         stem = path.stem.lower()
         tokens = _tokens(stem)
 
+        # frames.json — конфиг-артефакт от Antigravity. Не классифицируем
+        # его как extras, не копируем в refs/. Пользователь сам передаст
+        # его через --frames-file.
+        if path.name == "frames.json":
+            continue
+
         # текстовое задание
         if ext in TEXT_EXTS and _has_token(stem, "задание", "brief", "task"):
             out.brief_file = path
@@ -935,6 +941,20 @@ def default_canonical_frames(has_tag: bool) -> list[FrameSpec]:
     return seq
 
 
+# Ключи print-файлов, которые НЕЛЬЗЯ прикладывать когда frame помечен
+# clean=true (соответствующая сторона футболки должна остаться чистой).
+# Пустой set = clean не применим (например для tag_macro).
+CLEAN_OMIT_KEYS: dict[str, set[str]] = {
+    "front_hanger": {"print_front", "print_tag"},
+    "back_hanger": {"print_back"},
+    "front_detail": {"print_front"},
+    "back_detail": {"print_back"},
+    "model_front": {"print_front", "print_tag"},
+    "model_back": {"print_back"},
+    "tag_macro": set(),
+}
+
+
 def _build_frame_header(frame: FrameSpec,
                         placed: dict[str, list[Path]] | None) -> str:
     """Build a minimal English file-list header for one frame.
@@ -950,17 +970,19 @@ def _build_frame_header(frame: FrameSpec,
     Banana must understand the task purely from the file list + the
     technical prompt body.
 
-    Optional missing files are omitted silently. Cleanness flags
-    (frame.clean) are surfaced only as comments in the file-list — the
-    actual clean-mode behaviour is driven by the prompt body which
-    already contains IF/ELSE branches keyed off the presence of the
-    print file in the references.
+    Optional missing files are omitted silently. When `frame.clean` is
+    true, print files are omitted from the list as well — the prompt
+    body already has IF print_X.* IS PROVIDED ... ELSE ... clean
+    branches, so omitting the print file forces the clean branch.
     """
     recipe = FRAME_RECIPES.get(frame.kind, [])
+    omit = CLEAN_OMIT_KEYS.get(frame.kind, set()) if frame.clean else set()
 
     lines: list[str] = ["FILES TO ATTACH:"]
     n = 0
     for key, desc in recipe:
+        if key in omit:
+            continue
         if key.startswith("__manual_"):
             n += 1
             lines.append(f"{n}) {desc}")
@@ -974,6 +996,50 @@ def _build_frame_header(frame: FrameSpec,
     lines.append("---")
     lines.append("")
     return "\n".join(lines)
+
+
+# What print key (if any) the frame REQUIRES to actually do its job
+# (when not flagged as clean). Used for validation warnings.
+FRAME_REQUIRED_PRINT: dict[str, str | None] = {
+    "front_hanger": "print_front",
+    "back_hanger": "print_back",
+    "tag_macro": "print_tag",
+    "model_front": None,    # downstream of front_hanger; doesn't directly need print
+    "model_back": None,
+    "front_detail": "print_front",
+    "back_detail": "print_back",
+}
+
+
+def validate_frames_against_placed(
+    frames: list[FrameSpec],
+    placed: dict[str, list[Path]] | None,
+) -> list[str]:
+    """Возвращает список warning-строк (на русском, для stderr), если
+    frame требует наличия определённого print-файла, но в placed его нет
+    и frame НЕ помечен clean=true.
+
+    Это не fatal — мы всё равно сгенерируем промпт (в нём есть
+    IF/ELSE-ветка), но пользователю стоит знать, что Banana увидит
+    'PRINT NOT PROVIDED' и пойдёт в clean-ветку, что может быть не то,
+    чего пользователь хотел.
+    """
+    warnings: list[str] = []
+    placed = placed or {}
+    for i, frame in enumerate(frames, start=1):
+        required = FRAME_REQUIRED_PRINT.get(frame.kind)
+        if required is None:
+            continue
+        if frame.clean:
+            continue
+        if not placed.get(required):
+            warnings.append(
+                f"  кадр {i} ({frame.kind}): нужен {required}, но он не "
+                f"найден в папке. Promпt уйдёт в clean-mode. Если "
+                f"это намеренно — добавь \"clean\": true к этому frame "
+                f"в frames.json. Если нет — положи нужный файл в input."
+            )
+    return warnings
 
 
 def _frame_filename(idx: int, frame: FrameSpec) -> str:
@@ -1078,10 +1144,12 @@ def make_brief(task_dir: Path, ttype: str, slug: str, brief: str,
         "## Что делать",
         "1. Открой `READY_FOR_GEMINI/`.",
         "2. Используй отдельный `0X_PROMPT_*.txt` на каждую картинку.",
-        ("3. Для футболок порядок: 01 (спереди) → 02 (сзади)"
-         + (" → 03 (бирка)" if classified.print_tag else "")
-         + " → 04 (человек спереди) → 05 (человек сзади)."),
-        "4. Перед шагом 04/05 сохрани результаты шагов 01/02 как `result_front.*` и `result_back.*` и приложи их в чат.",
+        "3. Порядок — как в таблице выше (он определяется `frames.json`,"
+        " либо canonical pipeline если frames.json не задан).",
+        "4. Если в списке есть `MODEL_FRONT` — сначала собери"
+        " `FRONT_HANGER`, сохрани его результат как `result_front.*`"
+        " и приложи к промпту модели. Аналогично для `MODEL_BACK` ←"
+        " `BACK_HANGER` → `result_back.*`.",
         "5. Готовые финалы сохраняй в `outputs/` (имена не важны).",
         "",
     ]
@@ -1101,7 +1169,8 @@ def make_readme(target: Path, ttype: str,
         "  ЧТО ДЕЛАТЬ:",
         "  1) На каждую картинку используй отдельный 0X_PROMPT_*.txt",
         "  2) Прикладывай файлы из refs/ в порядке, указанном в промпте",
-        "  3) Для футболок: 04/05 строятся ПОСЛЕ 01/02, на их результате",
+        "  3) MODEL_FRONT строится ПОСЛЕ FRONT_HANGER (нужен result_front.*)",
+        "     MODEL_BACK строится ПОСЛЕ BACK_HANGER (нужен result_back.*)",
         "  4) Если что-то идёт не так — KNOWN_ISSUES.txt",
         "  5) Финалы сохраняй в ../outputs/ (имена не важны)",
         "",
@@ -1144,9 +1213,10 @@ KNOWN_ISSUES_TEMPLATE = """\
 ─────────────────────────────────────────────────────────────────────
   Напоминание: "бирка" в нашей системе — это маленький печатный
   брендовый label на ВНУТРЕННЕЙ (изнаночной) стороне ЗАДНЕЙ части
-  горловины. Видна только спереди (через вырез) и на макро (шаг 03).
-  На внешней стороне (спереди под воротником или сзади) её НЕТ.
-  Если в задании print_3_tag нет — бирки на финале быть не должно.
+  горловины. Видна только спереди (через вырез) и на макро
+  (frame `tag_macro`). На внешней стороне (спереди под воротником
+  или сзади) её НЕТ. Если в задании print_3_tag нет — бирки на
+  финале быть не должно.
 
   Если бирка вылезла на внешнюю сторону:
     "The neck-label print (print_3_tag.*) lives ONLY on the INNER
@@ -1224,8 +1294,9 @@ KNOWN_ISSUES_TEMPLATE = """\
   • Балкон-референсы (scene_*) = детали-память, НЕ замена сцены
   • Бирка = маленький печатный label на ВНУТРЕННЕЙ стороне задней
     части горловины; видна спереди через вырез и на макро; опц.
-    (если нет print_3_tag — её нет ни на 01, ни в шаге 03)
-    На модели (04/05) она НИКОГДА не видна — шея и волосы скрывают.
+    (если нет print_3_tag — её нет ни на front_hanger, ни на tag_macro)
+    На модели (model_front/model_back) она НИКОГДА не видна — шея
+    и волосы скрывают.
   • Текст и логотипы — слабая зона ИИ, считай нормой ручную доработку
   • Сохраняй промежуточные версии (иногда 1-я генерация лучше 4-й)
   • 4K режим (если есть) — лучше включить для финала
@@ -1291,7 +1362,9 @@ def parse_args() -> argparse.Namespace:
                    help="Путь к frames.json — явный список кадров от "
                         "Antigravity. Если задан, используется frame-driven "
                         "pipeline (N кадров из файла → N промптов в этом "
-                        "порядке). См. docs/INPUT_FOLDER_CONVENTION.md.")
+                        "порядке). Schema: {\"frames\": [{\"kind\": \"...\", "
+                        "\"clean\": bool, \"note\": \"...\"}]}. См. GEMINI.md "
+                        "секция 4.5 и examples/frames.example.json.")
     p.add_argument("--photos", type=Path, default=None,
                    help="(legacy) Папка с фото товара")
     p.add_argument("--print", dest="print_file", type=Path, default=None,
@@ -1386,6 +1459,35 @@ def main() -> int:
     outputs = task_dir / "outputs"
     snapshot = task_dir / "inputs_snapshot"
 
+    # Если frames-file задан — провалидируем ЕГО раньше, чем будет
+    # создан task_dir. Иначе при ошибке во frames.json остаётся
+    # пустой полусобранный таск-каталог.
+    frames: list[FrameSpec] | None = None
+    if args.frames_file is not None:
+        if not args.frames_file.exists():
+            raise SystemExit(
+                f"--frames-file {args.frames_file} не найден"
+            )
+        try:
+            frames = load_frames_file(args.frames_file)
+        except json.JSONDecodeError as e:
+            raise SystemExit(
+                f"--frames-file {args.frames_file}: невалидный JSON — "
+                f"{e}. Пример валидного формата: examples/"
+                f"frames.example.json"
+            )
+        except ValueError as e:
+            raise SystemExit(
+                f"--frames-file {args.frames_file}: {e}\n"
+                f"Допустимые kind: {', '.join(FRAME_KINDS)}.\n"
+                f"Пример валидного формата: examples/frames.example.json"
+            )
+        if not frames:
+            raise SystemExit(
+                f"--frames-file {args.frames_file} не содержит кадров "
+                f"(пустой массив frames)"
+            )
+
     if task_dir.exists():
         print(f"ERROR: task dir already exists: {task_dir}", file=sys.stderr)
         return 1
@@ -1412,22 +1514,11 @@ def main() -> int:
         for src in c.extras:
             shutil.copy2(src, extras_dir / src.name)
 
-    # Промпты. Если задан --frames-file, используем frame-driven pipeline
-    # (явный список кадров от Antigravity — собирается ровно столько и в том
-    # порядке, как сказал юзер). Иначе — старый canonical 5-step pipeline.
+    # Промпты. Если frames был провалидирован выше — он уже в `frames`.
+    # Если нет — позже подберём default canonical pipeline.
     has_tag = c.print_tag is not None
     has_back_print = c.print_back is not None
-    frames: list[FrameSpec] | None = None
-    if args.frames_file is not None:
-        if not args.frames_file.exists():
-            raise SystemExit(
-                f"--frames-file {args.frames_file} не найден"
-            )
-        frames = load_frames_file(args.frames_file)
-        if not frames:
-            raise SystemExit(
-                f"--frames-file {args.frames_file} не содержит кадров"
-            )
+    if frames is not None:
         # Скопировать сам frames.json в READY_FOR_GEMINI/ для трассировки
         # того, какой набор кадров был собран. Этот файл не идёт в Banana —
         # это аудит-артефакт для пользователя.
@@ -1436,6 +1527,14 @@ def main() -> int:
         # Если frames не задан явно, используем default canonical pipeline.
         effective_frames = frames if frames is not None else \
             default_canonical_frames(has_tag=has_tag)
+        # Предупреждаем пользователя если frame требует print, которого
+        # нет в папке (и frame не помечен clean=true). Не fatal —
+        # генерация продолжится, но Banana уйдёт в clean-ветку.
+        warns = validate_frames_against_placed(effective_frames, placed)
+        if warns:
+            print("ПРЕДУПРЕЖДЕНИЯ frame-driven validation:")
+            for w in warns:
+                print(w)
         make_tshirt_prompts(ready, has_tag=has_tag,
                             has_back_print=has_back_print, placed=placed,
                             frames=effective_frames)
