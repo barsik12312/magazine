@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import json
 import os
 import re
 import shutil
@@ -379,8 +380,8 @@ def pack_refs(c: Classified, refs_dir: Path, ttype: str) -> dict[str, list[Path]
 
 # ---------- prompts ----------
 
-TSHIRT_PROMPTS: dict[str, str] = {
-    "01_PROMPT_FRONT": """\
+FRAME_PROMPT_TEMPLATES: dict[str, str] = {
+    "front_hanger": """\
 This is a single-pass photorealistic IMAGE EDIT.
 
 BASE IMAGE (do not re-synthesize the scene): garment_front.*
@@ -423,7 +424,7 @@ FABRIC INTEGRATION (CRITICAL — do not skip; this is what separates a real scre
 - Edges of the print must follow the EXACT same micro-creases and folds of the cotton as the surrounding shirt area. If the fabric has a wrinkle or fold under the print, the print bends along that wrinkle (slight curvature, slight tonal shift, tiny break in coverage where the fold is sharpest). It is NOT flat. It is NOT rectangular. It is NOT shifted as a block on top of the shirt.
 - Lighting on the print must match the lighting on the shirt around it pixel-for-pixel: the same highlight side, the same shadow side, the same falloff. If part of the chest is in shade in garment_front.*, the print over that part is also slightly darker. If part is in highlight, the print there has slightly brighter ink response.
 - Colour rendering: matte screen-print on cotton — no glossy sticker sheen, no halo, no bevel, no embossed plastic effect, no decal sheen, no white outline, no rectangular box around the artwork. The ink reads as cotton-printed, not as vinyl heat-transfer or photoshop overlay.
-- Reference for the EXACT material look you should reproduce: imagine the close-up macro of a printed neck-label on cotton (the kind step 03 produces) — visible weave under the ink, slight ink-bleed into fibers, no separated layer. Apply that same material quality to the main chest print at chest-print scale.
+- Reference for the EXACT material look you should reproduce: imagine the close-up macro of a printed neck-label on cotton (the kind the tag_macro frame produces) — visible weave under the ink, slight ink-bleed into fibers, no separated layer. Apply that same material quality to the main chest print at chest-print scale.
 - Do NOT add any drop shadow, no glow, no outer rim, no extra contrast around the artwork.
 
 LOCKED ELEMENTS FROM garment_front.* (DO NOT CHANGE):
@@ -454,7 +455,7 @@ NEGATIVE / DO NOT INCLUDE:
 OUTPUT:
 One single photorealistic image in the same aspect ratio and framing as garment_front.*. The main chest print AND the small inner neck-label print (visible through the collar opening) are both replaced; everything else is preserved 1:1.
 """,
-    "02_PROMPT_BACK": """\
+    "back_hanger": """\
 This is a single-pass photorealistic IMAGE EDIT.
 
 BASE IMAGE (do not re-synthesize the scene): garment_back.*
@@ -482,7 +483,7 @@ FABRIC INTEGRATION (CRITICAL — do not skip; this is what separates a real scre
 - Edges of the print must follow the EXACT same micro-creases and folds of the cotton as the surrounding shirt area. If the fabric has a wrinkle or fold under the print, the print bends along that wrinkle (slight curvature, slight tonal shift, tiny break in coverage where the fold is sharpest). It is NOT flat. It is NOT rectangular. It is NOT shifted as a block on top of the shirt.
 - Lighting on the print must match the lighting on the shirt around it pixel-for-pixel: the same highlight side, the same shadow side, the same falloff. If part of the back is in shade in garment_back.*, the print over that part is also slightly darker. If part is in highlight, the print there has slightly brighter ink response.
 - Colour rendering: matte screen-print on cotton — no glossy sticker sheen, no halo, no bevel, no embossed plastic effect, no decal sheen, no white outline, no rectangular box around the artwork. The ink reads as cotton-printed, not as vinyl heat-transfer or photoshop overlay.
-- Reference for the EXACT material look you should reproduce: imagine the close-up macro of a printed neck-label on cotton (the kind step 03 produces) — visible weave under the ink, slight ink-bleed into fibers, no separated layer. Apply that same material quality to the back print at back-print scale.
+- Reference for the EXACT material look you should reproduce: imagine the close-up macro of a printed neck-label on cotton (the kind the tag_macro frame produces) — visible weave under the ink, slight ink-bleed into fibers, no separated layer. Apply that same material quality to the back print at back-print scale.
 - Do NOT add any drop shadow, no glow, no outer rim, no extra contrast around the artwork.
 
 LOCKED ELEMENTS FROM garment_back.* (DO NOT CHANGE):
@@ -513,7 +514,7 @@ NEGATIVE / DO NOT INCLUDE:
 OUTPUT:
 One photorealistic image in the same aspect ratio and framing as garment_back.*. If print_2_back.* was provided: the back print is replaced with the new artwork. If print_2_back.* was NOT provided: the back is clean cotton with no print at all. Everything else preserved 1:1 in both cases; no neck-label print visible on the outer back.
 """,
-    "03_PROMPT_TAG": """\
+    "tag_macro": """\
 This is a photorealistic close-up shot of the small NECK-LABEL PRINT ("бирка") on the INNER (wrong-side) surface of the back of the t-shirt's neckline.
 
 This is the printed brand label that lives on the INSIDE of the back of the neckband. From a normal front-on hanger view it peeks through the open collar (visible inside the collar opening, just above the front hem of the ribbed neckband). From a normal outer-back view it is hidden behind the cotton. This step's job is a clean macro of that inner label, with the new artwork applied.
@@ -526,7 +527,7 @@ REFERENCE IMAGES (attach in this order):
 - garment_tag.*    ← BASE / canvas if a dedicated label close-up exists
 - garment_front.*  ← fallback BASE if garment_tag.* is missing — the inner label visible through the collar opening will be the reference area
 - print_3_tag.*    ← new neck-label print (finished graphic asset)
-- result_front.*   ← optional: if step 01 is already done, use it as additional fidelity reinforcement
+- result_front.*   ← optional: if the front_hanger frame is already done, use it as additional fidelity reinforcement
 
 OBJECTIVE — DO ALL IN ONE PASS:
 1. Erase the existing neck-label print on the INNER surface of the back of the neckline completely. Reconstruct clean inner cotton fabric there with the same folds, light, and shadow as the surrounding inner-neckband area.
@@ -561,11 +562,11 @@ NEGATIVE / DO NOT INCLUDE:
 OUTPUT:
 One photorealistic close-up of the inner neck-label print, with print_3_tag.* faithfully applied to the inside surface of the back of the neckline, and the surrounding fabric, collar, and lighting preserved.
 """,
-    "04_PROMPT_MODEL_FRONT": """\
-This is a photorealistic catalog photo of a model wearing the t-shirt produced in step 01.
+    "model_front": """\
+This is a photorealistic catalog photo of a model wearing the t-shirt produced in the front_hanger frame.
 
 REFERENCE IMAGES (attach in this order):
-- result_front.*       ← the FINAL output of step 01 (REQUIRED — this is the primary GARMENT source of truth)
+- result_front.*       ← the FINAL output of the front_hanger frame (REQUIRED — this is the primary GARMENT source of truth)
 - model_head_front.*   ← face / head identity-lock for the model (REQUIRED if provided in the task; this is the EXACT face the model must have)
 - model_front.*        ← full-body front-view pose / styling reference for the model (optional)
 - print_1_front.*      ← OPTIONAL — chest print (finished graphic asset, fidelity reinforcement). May be ABSENT for this task. If absent, result_front.* shows a clean chest with no print, and so must this on-model shot.
@@ -630,11 +631,11 @@ NEGATIVE / DO NOT INCLUDE:
 OUTPUT:
 One photorealistic 4:5 front-view on-model catalog image. The garment matches result_front.* exactly; only the model and pose are added; no neck-label print visible on the outer front.
 """,
-    "05_PROMPT_MODEL_BACK": """\
-This is a photorealistic catalog photo of the same model wearing the t-shirt produced in step 02, viewed from the back.
+    "model_back": """\
+This is a photorealistic catalog photo of the same model wearing the t-shirt produced in the back_hanger frame, viewed from the back.
 
 REFERENCE IMAGES (attach in this order):
-- result_back.*       ← the FINAL output of step 02 (REQUIRED — primary GARMENT source of truth)
+- result_back.*       ← the FINAL output of the back_hanger frame (REQUIRED — primary GARMENT source of truth)
 - model_head_back.*   ← head / hair identity-lock from behind (REQUIRED if provided; this is the EXACT back of the head the model must have)
 - model_back.*        ← full-body back-view pose / styling reference (optional)
 - model_head_front.*  ← fidelity reinforcement so the same person identity is preserved across front/back shots (optional)
@@ -647,8 +648,8 @@ Back-view on-model companion image for the same t-shirt series. Must preserve th
 MODEL IDENTITY (HIGH PRIORITY):
 - If model_head_back.* is provided: the back of the head must match model_head_back.* exactly — same hair length, same hair colour, same hair texture, same hairline shape, same nape area, same neck thickness. Do NOT generate a different person's hair / head from behind.
 - If model_back.* is provided: follow its full-body back-view pose, build, styling, framing, and crop logic.
-- If model_head_front.* is provided as well: use it as a cross-reference so the back-of-head matches the SAME person as in step 04 — hair colour and length, skin tone of the neck, body build must be consistent.
-- If neither head nor body reference is provided, fall back to: same young man as step 04 — slim athletic build, dark hair, natural proportions. Back view only, face not shown.
+- If model_head_front.* is provided as well: use it as a cross-reference so the back-of-head matches the SAME person as in the model_front frame — hair colour and length, skin tone of the neck, body build must be consistent.
+- If neither head nor body reference is provided, fall back to: same young man as in the model_front frame — slim athletic build, dark hair, natural proportions. Back view only, face not shown.
 
 GARMENT CONTINUITY (ABSOLUTE PRIORITY):
 result_back.* is the source of truth for the garment.
@@ -698,6 +699,92 @@ NEGATIVE / DO NOT INCLUDE:
 OUTPUT:
 One photorealistic 4:5 back-view on-model catalog image. The garment matches result_back.* exactly; only the model and pose are added; no neck-label print visible on the outer back.
 """,
+    "front_detail": """\
+This is a photorealistic close-up shot of the MAIN CHEST PRINT on the OUTER FRONT of the t-shirt — a tight crop into the chest area so the print fills most of the frame.
+
+This is NOT a full hanger view. This is a detail / macro / zoom-in into the chest print specifically. The viewer should see the print at high detail, with surrounding cotton fabric, folds, fabric grain, and stitching readable as a tight crop of the chest panel.
+
+BASE IMAGE: garment_front.* — treat as the canvas. We are reusing the same shirt, same lighting, same fabric, just zoomed in on the chest print.
+
+REFERENCE IMAGES (attach in this order):
+- garment_front.*  ← BASE / canvas (the front-on hanger photo of the existing t-shirt — we will zoom into its chest area)
+- print_1_front.*  ← OPTIONAL — new MAIN chest print (finished graphic asset). May be ABSENT for this task. If absent, the chest must remain CLEAN cotton with NO print and the close-up just shows clean cotton weave.
+- result_front.*   ← optional: if the front_hanger frame is already done, use it as the source of truth instead of garment_front.*
+- design_sketch.*  ← OPTIONAL black-and-white front+back collage / sketch from the designer. DESIGN-INTENT REFERENCE ONLY. Do NOT extract pixels from it. Do NOT trace it. The actual finished print artwork lives in print_1_front.* — the sketch is just the rough vision.
+
+OBJECTIVE — DO ALL IN ONE PASS:
+1. Erase the existing chest print on garment_front.* completely (or use result_front.* directly if available — it already has the new print applied).
+2. IF print_1_front.* IS PROVIDED: apply it onto the chest as the main print, faithfully and 1:1. Same scale and position as on the full hanger view (large, centered, around mid-chest). Preserve every glyph, line, decoration, and proportion.
+   IF print_1_front.* IS NOT PROVIDED: leave the chest as CLEAN cotton with NO print whatsoever. The close-up is just clean cotton weave.
+3. Re-frame the camera as a tight crop into the chest area so the chest print (or clean cotton, if no print) fills most of the frame. Keep the lighting, color temperature, fabric tone, and depth of field consistent with garment_front.*.
+
+PRINT BEHAVIOUR — FABRIC INTEGRATION (CRITICAL):
+- The chest print must look APPLIED INTO the cotton, not laid as a sticker. Visible cotton weave / microtexture must show THROUGH the dark areas of the print, like real screen-print ink absorbing slightly into cotton fibers. At this zoom level, the ink-into-cotton interaction is THE main visual story — Banana must NOT render this as a clean flat decal.
+- Edges of the print follow the fabric folds and weave; very fine fibers may break the very edges of the ink (because real screen-print on cotton is not perfectly clean at high zoom).
+- Lighting on the print matches the lighting on the surrounding fabric: same highlight side, same shadow side. If part of the chest is in shade, the print over that part is also slightly darker.
+- Matte screen-print on cotton — no glossy sticker sheen, no halo, no bevel, no embossed plastic effect, no decal sheen, no white outline, no rectangular box around the artwork. The ink reads as cotton-printed, not as vinyl heat-transfer or photoshop overlay.
+
+LOCKED ELEMENTS (DO NOT CHANGE):
+- t-shirt color, cotton jersey texture
+- lighting direction and exposure
+- white balance and color temperature
+- the print artwork itself (every glyph, line, proportion of print_1_front.*)
+
+NEGATIVE / DO NOT INCLUDE:
+- do NOT add new text or new graphics that are not in print_1_front.*
+- do NOT migrate print_2_back.* (back print) or print_3_tag.* (бирка) onto the chest
+- do NOT show the inner neck-label area in this shot — this is a chest crop, not a collar crop
+- no glossy editorial light, no glamour
+- no stains, no heavy wear, no fake distress
+- no AI artifacts, no warped letters, no melted edges
+- no watermarks, no UI overlays
+
+OUTPUT:
+One photorealistic tight close-up of the chest print, with print_1_front.* faithfully applied to the cotton (or clean cotton if no print), and the surrounding fabric, lighting, and color preserved consistently with garment_front.*.
+""",
+    "back_detail": """\
+This is a photorealistic close-up shot of the MAIN BACK PRINT on the OUTER BACK of the t-shirt — a tight crop into the back panel so the print fills most of the frame.
+
+This is NOT a full hanger view. This is a detail / macro / zoom-in into the back print specifically. The viewer should see the print at high detail, with surrounding cotton fabric, folds, fabric grain, and stitching readable as a tight crop of the back panel.
+
+BASE IMAGE: garment_back.* — treat as the canvas. We are reusing the same shirt, same lighting, same fabric, just zoomed in on the back print.
+
+REFERENCE IMAGES (attach in this order):
+- garment_back.*   ← BASE / canvas (the back-on hanger photo of the existing t-shirt — we will zoom into its back area)
+- print_2_back.*   ← OPTIONAL — new back print (finished graphic asset). May be ABSENT for this task. If absent, the back must remain CLEAN cotton with NO print and the close-up just shows clean cotton weave.
+- result_back.*    ← optional: if the back_hanger frame is already done, use it as the source of truth instead of garment_back.*
+- design_sketch.*  ← OPTIONAL black-and-white front+back collage / sketch from the designer. DESIGN-INTENT REFERENCE ONLY. Do NOT extract pixels from it. Do NOT trace it. The actual finished print artwork lives in print_2_back.* — the sketch is just the rough vision.
+
+OBJECTIVE — DO ALL IN ONE PASS:
+1. Erase the existing back print on garment_back.* completely (or use result_back.* directly if available — it already has the new print applied).
+2. IF print_2_back.* IS PROVIDED: apply it onto the back as the main print, faithfully and 1:1. Same scale and position as on the full hanger view (large, centered, upper back area). Preserve every glyph, line, decoration, and proportion.
+   IF print_2_back.* IS NOT PROVIDED: leave the back as CLEAN cotton with NO print whatsoever. The close-up is just clean cotton weave.
+3. Re-frame the camera as a tight crop into the back area so the back print (or clean cotton, if no print) fills most of the frame. Keep the lighting, color temperature, fabric tone, and depth of field consistent with garment_back.*.
+
+PRINT BEHAVIOUR — FABRIC INTEGRATION (CRITICAL):
+- The back print must look APPLIED INTO the cotton, not laid as a sticker. Visible cotton weave / microtexture must show THROUGH the dark areas of the print, like real screen-print ink absorbing slightly into cotton fibers. At this zoom level, the ink-into-cotton interaction is THE main visual story — Banana must NOT render this as a clean flat decal.
+- Edges of the print follow the fabric folds and weave; very fine fibers may break the very edges of the ink (because real screen-print on cotton is not perfectly clean at high zoom).
+- Lighting on the print matches the lighting on the surrounding fabric: same highlight side, same shadow side. If part of the back is in shade, the print over that part is also slightly darker.
+- Matte screen-print on cotton — no glossy sticker sheen, no halo, no bevel, no embossed plastic effect, no decal sheen, no white outline, no rectangular box around the artwork. The ink reads as cotton-printed, not as vinyl heat-transfer or photoshop overlay.
+
+LOCKED ELEMENTS (DO NOT CHANGE):
+- t-shirt color, cotton jersey texture
+- lighting direction and exposure
+- white balance and color temperature
+- the print artwork itself (every glyph, line, proportion of print_2_back.*)
+
+NEGATIVE / DO NOT INCLUDE:
+- do NOT add new text or new graphics that are not in print_2_back.*
+- do NOT migrate print_1_front.* (chest print) or print_3_tag.* (бирка) onto the back
+- do NOT show the inner neck-label area in this shot — that label lives on the INSIDE of the neckline, not on the outer back
+- no glossy editorial light, no glamour
+- no stains, no heavy wear, no fake distress
+- no AI artifacts, no warped letters, no melted edges
+- no watermarks, no UI overlays
+
+OUTPUT:
+One photorealistic tight close-up of the back print, with print_2_back.* faithfully applied to the cotton (or clean cotton if no print), and the surrounding fabric, lighting, and color preserved consistently with garment_back.*.
+""",
 }
 
 
@@ -705,8 +792,8 @@ One photorealistic 4:5 back-view on-model catalog image. The garment matches res
 # Используются для генерации читаемой "шапки" промпта.
 # (key_in_placed_dict, short English description of the file)
 # Keys must match `placed` keys produced by pack_refs.
-TSHIRT_PROMPT_RECIPES: dict[str, list[tuple[str, str]]] = {
-    "01_PROMPT_FRONT": [
+FRAME_RECIPES: dict[str, list[tuple[str, str]]] = {
+    "front_hanger": [
         ("garment_front", "base front photo (canvas)"),
         ("print_front", "new chest print"),
         ("print_tag", "new inner-neck label print"),
@@ -714,39 +801,143 @@ TSHIRT_PROMPT_RECIPES: dict[str, list[tuple[str, str]]] = {
         ("scene", "balcony memory ref"),
         ("design_sketch", "B&W design sketch — reference only, NOT a print"),
     ],
-    "02_PROMPT_BACK": [
+    "back_hanger": [
         ("garment_back", "base back photo (canvas)"),
         ("print_back", "new back print (if absent: clean back, no print)"),
         ("garment_tag", "neckline close-up ref"),
         ("scene", "balcony memory ref"),
         ("design_sketch", "B&W design sketch — reference only, NOT a print"),
     ],
-    "03_PROMPT_TAG": [
+    "tag_macro": [
         ("garment_front", "front photo (memory of collar opening)"),
         ("print_tag", "new inner-neck label print"),
         ("garment_tag", "neckline close-up ref"),
     ],
-    "04_PROMPT_MODEL_FRONT": [
-        ("__manual_result_front__", "result_front.* — your output of step 01 (attach from outputs/)"),
+    "model_front": [
+        ("__manual_result_front__", "result_front.* — your output of the front_hanger frame (attach from outputs/)"),
         ("model_head_front", "front face — identity lock"),
         ("model_front", "full-body front pose ref"),
-        ("model_head_back", "back of head (consistency with step 05)"),
+        ("model_head_back", "back of head (consistency with the model_back frame)"),
         ("print_front", "chest print fidelity ref"),
         ("print_tag", "inner-neck print ref (not visible on model)"),
     ],
-    "05_PROMPT_MODEL_BACK": [
-        ("__manual_result_back__", "result_back.* — your output of step 02 (attach from outputs/)"),
+    "model_back": [
+        ("__manual_result_back__", "result_back.* — your output of the back_hanger frame (attach from outputs/)"),
         ("model_head_back", "back of head — identity lock"),
         ("model_back", "full-body back pose ref"),
-        ("model_head_front", "face (consistency with step 04)"),
+        ("model_head_front", "face (consistency with the model_front frame)"),
         ("print_back", "back print fidelity ref"),
+    ],
+    "front_detail": [
+        ("garment_front", "base front photo (canvas — will be zoomed in)"),
+        ("print_front", "chest print to apply (if absent: clean cotton close-up)"),
+        ("__manual_result_front__", "result_front.* — optional, if the front_hanger frame is already done"),
+        ("design_sketch", "B&W design sketch — reference only, NOT a print"),
+    ],
+    "back_detail": [
+        ("garment_back", "base back photo (canvas — will be zoomed in)"),
+        ("print_back", "back print to apply (if absent: clean cotton close-up)"),
+        ("__manual_result_back__", "result_back.* — optional, if the back_hanger frame is already done"),
+        ("design_sketch", "B&W design sketch — reference only, NOT a print"),
     ],
 }
 
 
-def _build_prompt_header(sid: str,
-                         placed: dict[str, list[Path]] | None) -> str:
-    """Build a minimal English file-list header for a prompt.
+# All known frame kinds (for validation in --frames-file).
+FRAME_KINDS: tuple[str, ...] = (
+    "front_hanger",
+    "back_hanger",
+    "tag_macro",
+    "model_front",
+    "model_back",
+    "front_detail",
+    "back_detail",
+)
+
+
+# Человекочитаемые названия для readme/brief.
+FRAME_KIND_TITLES: dict[str, str] = {
+    "front_hanger": "Футболка спереди на вешалке",
+    "back_hanger": "Футболка сзади на вешалке",
+    "tag_macro": "Бирка (внутренняя сторона задней горловины) крупным планом",
+    "model_front": "Модель спереди",
+    "model_back": "Модель сзади",
+    "front_detail": "Грудной принт крупным планом",
+    "back_detail": "Back-принт крупным планом",
+}
+
+
+@dataclass
+class FrameSpec:
+    """Один кадр в pipeline.
+
+    kind:  одно из FRAME_KINDS.
+    clean: для front_hanger / back_hanger / model_front / model_back —
+           если True, то соответствующая сторона футболки без принта
+           (clean-front / clean-back). Не используется для tag_macro,
+           front_detail, back_detail (там clean определяется наличием
+           файла print_*).
+    note:  свободная пользовательская заметка. НЕ копируется в промпт,
+           видна только в frames_used.json и в логах для отладки.
+    """
+    kind: str
+    clean: bool = False
+    note: str = ""
+
+
+def load_frames_file(path: Path) -> list[FrameSpec]:
+    """Читает frames.json вида:
+
+        {"frames": [
+          {"kind": "back_hanger"},
+          {"kind": "back_detail"},
+          {"kind": "front_hanger", "clean": true},
+          {"kind": "model_front", "clean": true},
+          {"kind": "model_back"}
+        ]}
+
+    Бросает ValueError если kind незнакомый.
+    """
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    frames_data = raw.get("frames", [])
+    out: list[FrameSpec] = []
+    for i, item in enumerate(frames_data):
+        if not isinstance(item, dict):
+            raise ValueError(f"frames[{i}] is not an object: {item!r}")
+        kind = item.get("kind")
+        if kind not in FRAME_KINDS:
+            raise ValueError(
+                f"frames[{i}].kind = {kind!r} is not one of "
+                f"{', '.join(FRAME_KINDS)}"
+            )
+        out.append(FrameSpec(
+            kind=kind,
+            clean=bool(item.get("clean", False)),
+            note=str(item.get("note", "")),
+        ))
+    return out
+
+
+def default_canonical_frames(has_tag: bool) -> list[FrameSpec]:
+    """Старый 5-step pipeline для обратной совместимости.
+
+    Если has_tag=False — пропускаем tag_macro.
+    """
+    seq = [
+        FrameSpec(kind="front_hanger"),
+        FrameSpec(kind="back_hanger"),
+        FrameSpec(kind="tag_macro"),
+        FrameSpec(kind="model_front"),
+        FrameSpec(kind="model_back"),
+    ]
+    if not has_tag:
+        seq = [f for f in seq if f.kind != "tag_macro"]
+    return seq
+
+
+def _build_frame_header(frame: FrameSpec,
+                        placed: dict[str, list[Path]] | None) -> str:
+    """Build a minimal English file-list header for one frame.
 
     Format:
         FILES TO ATTACH:
@@ -754,14 +945,18 @@ def _build_prompt_header(sid: str,
         2) <name> — <short description>
         ---
 
-    Per-frame user notes from the brief are NOT included here — those
-    are for the assistant assembling the package, not for Banana. Banana
-    must understand the task purely from the file list + the technical
-    prompt body.
+    User-supplied per-frame notes (frame.note) are NOT included here —
+    they are for the assistant assembling the package, not for Banana.
+    Banana must understand the task purely from the file list + the
+    technical prompt body.
 
-    Optional missing files are omitted silently.
+    Optional missing files are omitted silently. Cleanness flags
+    (frame.clean) are surfaced only as comments in the file-list — the
+    actual clean-mode behaviour is driven by the prompt body which
+    already contains IF/ELSE branches keyed off the presence of the
+    print file in the references.
     """
-    recipe = TSHIRT_PROMPT_RECIPES.get(sid, [])
+    recipe = FRAME_RECIPES.get(frame.kind, [])
 
     lines: list[str] = ["FILES TO ATTACH:"]
     n = 0
@@ -781,25 +976,49 @@ def _build_prompt_header(sid: str,
     return "\n".join(lines)
 
 
+def _frame_filename(idx: int, frame: FrameSpec) -> str:
+    """Returns NN_PROMPT_<KIND>.txt where NN is 1-based position."""
+    return f"{idx:02d}_PROMPT_{frame.kind.upper()}.txt"
+
+
+def make_frames(frames: list[FrameSpec], target: Path,
+                placed: dict[str, list[Path]] | None) -> int:
+    """Generate one prompt file per frame in order.
+
+    Filename: 01_PROMPT_<KIND>.txt, 02_PROMPT_<KIND>.txt, ...
+    Body: FRAME_PROMPT_TEMPLATES[frame.kind].
+    Header: _build_frame_header(frame, placed).
+    Returns count of files written.
+    """
+    written = 0
+    for i, frame in enumerate(frames, start=1):
+        if frame.kind not in FRAME_PROMPT_TEMPLATES:
+            raise ValueError(
+                f"frame {i}: unknown kind {frame.kind!r}"
+            )
+        body = FRAME_PROMPT_TEMPLATES[frame.kind]
+        header = _build_frame_header(frame, placed)
+        write_text(target / _frame_filename(i, frame), header + body)
+        written += 1
+    return written
+
+
 def make_tshirt_prompts(target: Path, has_tag: bool = True,
                         has_back_print: bool = True,
-                        placed: dict[str, list[Path]] | None = None) -> int:
+                        placed: dict[str, list[Path]] | None = None,
+                        frames: list[FrameSpec] | None = None) -> int:
     """Записывает промпты в target.
 
-    has_tag=False → пропускает 03_PROMPT_TAG.
-    has_back_print: пока не убираем 02 даже если нет — спина просто чистая.
-    placed: словарь refs (см. pack_refs) для построения per-step шапок.
+    Если frames передан — собираем ровно эти frames в их порядке (новый
+    frame-driven pipeline). Если нет — собираем дефолтный canonical
+    pipeline (back-compat): 01_FRONT, 02_BACK, 03_TAG (если has_tag),
+    04_MODEL_FRONT, 05_MODEL_BACK.
 
     Возвращает число записанных файлов.
     """
-    written = 0
-    for sid, body in TSHIRT_PROMPTS.items():
-        if not has_tag and sid == "03_PROMPT_TAG":
-            continue
-        header = _build_prompt_header(sid, placed)
-        write_text(target / f"{sid}.txt", header + body)
-        written += 1
-    return written
+    if frames is None:
+        frames = default_canonical_frames(has_tag=has_tag)
+    return make_frames(frames, target, placed)
 
 
 # generic fallback for non-tshirt types — берём всё из шаблона
@@ -1068,6 +1287,11 @@ def parse_args() -> argparse.Namespace:
                    help="Краткое ТЗ. Можно через --brief-file")
     p.add_argument("--brief-file", type=Path, default=None,
                    help="Путь к md/txt файлу с ТЗ")
+    p.add_argument("--frames-file", type=Path, default=None,
+                   help="Путь к frames.json — явный список кадров от "
+                        "Antigravity. Если задан, используется frame-driven "
+                        "pipeline (N кадров из файла → N промптов в этом "
+                        "порядке). См. docs/INPUT_FOLDER_CONVENTION.md.")
     p.add_argument("--photos", type=Path, default=None,
                    help="(legacy) Папка с фото товара")
     p.add_argument("--print", dest="print_file", type=Path, default=None,
@@ -1188,15 +1412,40 @@ def main() -> int:
         for src in c.extras:
             shutil.copy2(src, extras_dir / src.name)
 
-    # промпты. Для футболок шаг 03 (бирка-кадр) пропускаем,
-    # если в задании нет print_3_tag.
+    # Промпты. Если задан --frames-file, используем frame-driven pipeline
+    # (явный список кадров от Antigravity — собирается ровно столько и в том
+    # порядке, как сказал юзер). Иначе — старый canonical 5-step pipeline.
     has_tag = c.print_tag is not None
     has_back_print = c.print_back is not None
+    frames: list[FrameSpec] | None = None
+    if args.frames_file is not None:
+        if not args.frames_file.exists():
+            raise SystemExit(
+                f"--frames-file {args.frames_file} не найден"
+            )
+        frames = load_frames_file(args.frames_file)
+        if not frames:
+            raise SystemExit(
+                f"--frames-file {args.frames_file} не содержит кадров"
+            )
+        # Скопировать сам frames.json в READY_FOR_GEMINI/ для трассировки
+        # того, какой набор кадров был собран. Этот файл не идёт в Banana —
+        # это аудит-артефакт для пользователя.
+        shutil.copy2(args.frames_file, ready / "frames_used.json")
     if args.type == "tshirt":
+        # Если frames не задан явно, используем default canonical pipeline.
+        effective_frames = frames if frames is not None else \
+            default_canonical_frames(has_tag=has_tag)
         make_tshirt_prompts(ready, has_tag=has_tag,
-                            has_back_print=has_back_print, placed=placed)
-        if not has_tag:
-            scenarios = [s for s in scenarios if s.get("id") != "03_PROMPT_TAG"]
+                            has_back_print=has_back_print, placed=placed,
+                            frames=effective_frames)
+        # Пересобрать scenarios под фактический набор кадров —
+        # README.txt и 00_BRIEF.md покажут именно их.
+        scenarios = [
+            {"id": _frame_filename(i, f).removesuffix(".txt"),
+             "title": FRAME_KIND_TITLES.get(f.kind, f.kind)}
+            for i, f in enumerate(effective_frames, start=1)
+        ]
     else:
         make_generic_prompts(ready, args.type, scenarios)
 
