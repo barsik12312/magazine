@@ -701,60 +701,6 @@ One photorealistic 4:5 back-view on-model catalog image. The garment matches res
 }
 
 
-def parse_frame_notes(brief_text: str) -> tuple[str, list[str]]:
-    """Извлекает per-frame заметки из текста брифа.
-
-    Возвращает кортеж:
-    - global_note: полный текст пользовательского описания кадров (если есть),
-      который мы прокинем в КАЖДЫЙ промпт как "USER BRIEF — read this first".
-      Так Banana видит общую задумку (например: "front пустой, back с принтом")
-      даже если порядок шагов в задании отличается от 01/02/03/04/05.
-    - per_index_notes: список из 5 строк (или короче), где i-й элемент =
-      пользовательская заметка с номером i+1 в брифе. Используется как
-      «сильный» хинт для соответствующего шага, если соответствие
-      номеров шагам совпадает (1=01_FRONT, 2=02_BACK, ...).
-
-    Парсим нумерованный список: "1. ...", "1) ...", "1: ..." и т.д.
-    """
-    if not brief_text:
-        return "", []
-
-    pattern = re.compile(r"^\s*(\d{1,2})[.)\]:]\s*(.+?)\s*$")
-    notes: dict[int, str] = {}
-    raw_lines: list[str] = []
-    for line in brief_text.splitlines():
-        m = pattern.match(line)
-        if not m:
-            continue
-        try:
-            idx = int(m.group(1))
-        except ValueError:
-            continue
-        text = m.group(2).strip()
-        if not text:
-            continue
-        raw_lines.append(f"{idx}. {text}")
-        if 1 <= idx <= 5 and idx not in notes:
-            notes[idx] = text
-
-    global_note = "\n".join(raw_lines)
-    per_index_notes = [notes.get(i, "") for i in range(1, 6)]
-    return global_note, per_index_notes
-
-
-# Маппинг номера в брифе → SID шага. Используется только когда
-# пользователь явно следует стандартной нумерации (1=front, 2=back,
-# 3=tag, 4=model_front, 5=model_back). Если номера расходятся — на
-# этот случай каждый промпт всё равно получает full global_note.
-TSHIRT_FRAME_INDEX_TO_SID: dict[int, str] = {
-    1: "01_PROMPT_FRONT",
-    2: "02_PROMPT_BACK",
-    3: "03_PROMPT_TAG",
-    4: "04_PROMPT_MODEL_FRONT",
-    5: "05_PROMPT_MODEL_BACK",
-}
-
-
 # Per-step recipes: какие файлы прикреплять и что именно делает шаг.
 # Используются для генерации читаемой "шапки" промпта.
 # (key_in_placed_dict, short English description of the file)
@@ -799,37 +745,25 @@ TSHIRT_PROMPT_RECIPES: dict[str, list[tuple[str, str]]] = {
 
 
 def _build_prompt_header(sid: str,
-                         placed: dict[str, list[Path]] | None,
-                         user_brief_global: str = "",
-                         user_frame_note: str = "") -> str:
+                         placed: dict[str, list[Path]] | None) -> str:
     """Build a minimal English file-list header for a prompt.
 
     Format:
-        USER BRIEF (highest priority — read first):
-        <full numbered list from the user's brief>
-        Frame for THIS step: <specific note>   (if matches std numbering)
-
         FILES TO ATTACH:
         1) <name> — <short description>
         2) <name> — <short description>
         ---
 
+    Per-frame user notes from the brief are NOT included here — those
+    are for the assistant assembling the package, not for Banana. Banana
+    must understand the task purely from the file list + the technical
+    prompt body.
+
     Optional missing files are omitted silently.
     """
     recipe = TSHIRT_PROMPT_RECIPES.get(sid, [])
 
-    lines: list[str] = []
-    if user_brief_global or user_frame_note:
-        lines.append("USER BRIEF (highest priority — read first; if it "
-                     "conflicts with the technical prompt below, the user "
-                     "brief wins):")
-        if user_brief_global:
-            for ln in user_brief_global.splitlines():
-                lines.append(ln)
-        if user_frame_note:
-            lines.append(f"Frame for THIS step: {user_frame_note}")
-        lines.append("")
-    lines.append("FILES TO ATTACH:")
+    lines: list[str] = ["FILES TO ATTACH:"]
     n = 0
     for key, desc in recipe:
         if key.startswith("__manual_"):
@@ -849,35 +783,20 @@ def _build_prompt_header(sid: str,
 
 def make_tshirt_prompts(target: Path, has_tag: bool = True,
                         has_back_print: bool = True,
-                        placed: dict[str, list[Path]] | None = None,
-                        user_brief_global: str = "",
-                        per_index_notes: list[str] | None = None) -> int:
+                        placed: dict[str, list[Path]] | None = None) -> int:
     """Записывает промпты в target.
 
     has_tag=False → пропускает 03_PROMPT_TAG.
     has_back_print: пока не убираем 02 даже если нет — спина просто чистая.
     placed: словарь refs (см. pack_refs) для построения per-step шапок.
-    user_brief_global: полный текст user-frame-list из брифа (одна и та же
-        строка для каждого шага, чтобы Banana видел общую задумку).
-    per_index_notes: список заметок 1..5; если SID соответствует индексу
-        по стандартной нумерации, добавляем "Frame for THIS step: ...".
 
     Возвращает число записанных файлов.
     """
     written = 0
-    per = per_index_notes or []
     for sid, body in TSHIRT_PROMPTS.items():
         if not has_tag and sid == "03_PROMPT_TAG":
             continue
-        # пытаемся подобрать конкретную заметку для шага по стандартному
-        # маппингу 1→01, 2→02, ... (best-effort; если порядок другой —
-        # пользователь увидит расхождение через user_brief_global)
-        idx_for_sid = {v: k for k, v in TSHIRT_FRAME_INDEX_TO_SID.items()}.get(sid)
-        per_step_note = ""
-        if idx_for_sid and idx_for_sid - 1 < len(per):
-            per_step_note = per[idx_for_sid - 1]
-        header = _build_prompt_header(sid, placed, user_brief_global,
-                                      per_step_note)
+        header = _build_prompt_header(sid, placed)
         write_text(target / f"{sid}.txt", header + body)
         written += 1
     return written
@@ -1273,12 +1192,9 @@ def main() -> int:
     # если в задании нет print_3_tag.
     has_tag = c.print_tag is not None
     has_back_print = c.print_back is not None
-    user_brief_global, per_index_notes = parse_frame_notes(c.brief_text)
     if args.type == "tshirt":
         make_tshirt_prompts(ready, has_tag=has_tag,
-                            has_back_print=has_back_print, placed=placed,
-                            user_brief_global=user_brief_global,
-                            per_index_notes=per_index_notes)
+                            has_back_print=has_back_print, placed=placed)
         if not has_tag:
             scenarios = [s for s in scenarios if s.get("id") != "03_PROMPT_TAG"]
     else:
