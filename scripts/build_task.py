@@ -392,8 +392,8 @@ Everything else — the t-shirt silhouette, the fabric folds, the hanger, the wa
 
 REFERENCE IMAGES (attach in this order):
 - garment_front.*  ← BASE / canvas (the front-on hanger photo of the existing t-shirt)
-- print_1_front.*  ← new MAIN chest print (finished graphic asset, larger size, centered on the chest)
-- print_3_tag.*    ← new neck-label print to apply on the inner back-of-neckline (finished graphic asset, small)
+- print_1_front.*  ← OPTIONAL — new MAIN chest print (finished graphic asset, larger size, centered on the chest). May be ABSENT for this task. If absent, the chest must remain CLEAN cotton with NO print.
+- print_3_tag.*    ← OPTIONAL — new neck-label print to apply on the inner back-of-neckline (finished graphic asset, small). May be ABSENT. If absent, the inner neck-label area must remain CLEAN cotton with NO print.
 - garment_tag.*    ← optional close-up reference of the existing inner neck-label area
 - scene_*.*        ← detail-memory references of the real balcony scene; use only as visual memory so background details are not invented if any tiny gap appears around the modified regions
 - design_sketch.*  ← OPTIONAL black-and-white front+back collage / sketch from the designer. This is a DESIGN-INTENT REFERENCE ONLY. It is NOT a print asset and NOT a canvas. Do NOT extract pixels from it. Do NOT apply it to the shirt. Do NOT trace it. The actual finished print artwork lives in print_1_front.* / print_2_back.* / print_3_tag.* — those are the only sources of printed graphics. The sketch only shows the rough vision of how the finished t-shirt should "feel" overall (silhouette, balance of front and back graphics). The "бирка" / neck-label print is NEVER drawn on the sketch — its absence on the sketch must NOT be interpreted as "no neck-label"; the neck-label rule still comes from print_3_tag.* and garment_front.*.
@@ -401,9 +401,15 @@ REFERENCE IMAGES (attach in this order):
 OBJECTIVE — DO ALL IN ONE PASS:
 1. Erase the existing MAIN CHEST PRINT on the OUTER FRONT of the t-shirt in garment_front.* completely. Reconstruct clean cotton fabric in that area, preserving folds, light, and shadow as in the rest of the shirt.
 2. Erase the existing NECK-LABEL PRINT on the INNER (wrong-side) surface of the back of the neckline — the small printed graphic visible inside the collar opening. Reconstruct clean cotton fabric of the inner neckband there.
-3. Apply print_1_front.* onto the chest as the main print. Size and placement: same scale and position as the original main chest print in garment_front.* (large, centered, around mid-chest height). Treat as a matte screen-print transfer. Preserve every glyph, line, decoration, strike-through, and proportion of print_1_front.* — do not re-typeset, do not redesign, do not respell.
-4. Apply print_3_tag.* onto the INNER (wrong-side) surface of the back of the neckline, in the same small size and same position as the original neck-label print in garment_front.* (i.e. visible inside the collar opening, sitting on the inner neckband / inside back-of-neck panel just above the front hem of the ribbed collar). It is a small printed graphic, visibly smaller than the main chest print. Preserve every glyph and proportion of print_3_tag.* exactly. If print_3_tag.* is not provided, leave that area as clean inner-cotton with no invented brand text.
-5. Both prints must coexist on the same front view: the small neck-label print visible inside the collar opening AND the main chest print centered on the chest. Both look like real screen-print on cotton.
+3. IF print_1_front.* IS PROVIDED: apply it onto the chest as the main print. Size and placement: same scale and position as the original main chest print in garment_front.* (large, centered, around mid-chest height). Treat as a matte screen-print transfer. Preserve every glyph, line, decoration, strike-through, and proportion of print_1_front.* — do not re-typeset, do not redesign, do not respell.
+   IF print_1_front.* IS NOT PROVIDED: leave the chest as CLEAN cotton with NO print whatsoever. Do not invent, hallucinate, copy, or carry over any print from print_2_back.* / print_3_tag.* / design_sketch.* / the original chest graphic / any other source. The chest stays as plain cotton in the same color as the rest of the shirt.
+4. IF print_3_tag.* IS PROVIDED: apply it onto the INNER (wrong-side) surface of the back of the neckline, in the same small size and same position as the original neck-label print in garment_front.* (i.e. visible inside the collar opening, sitting on the inner neckband / inside back-of-neck panel just above the front hem of the ribbed collar). It is a small printed graphic, visibly smaller than the main chest print. Preserve every glyph and proportion of print_3_tag.* exactly.
+   IF print_3_tag.* IS NOT PROVIDED: leave the inner-neck area as clean inner-cotton with NO invented brand text.
+5. The visible result depends on which prints are provided:
+   - both provided → chest print AND inner-neck label both visible
+   - only print_1_front.* → chest print visible, inner-neck area is clean cotton
+   - only print_3_tag.* → chest is clean cotton, inner-neck label visible inside collar
+   - neither provided → completely clean white shirt; chest and inner-neck both plain cotton (this still requires erasing the originals from garment_front.*)
 
 PRINT BEHAVIOUR:
 - Treat print_1_front.* and print_3_tag.* as TWO completely independent finished graphic design assets.
@@ -562,11 +568,11 @@ REFERENCE IMAGES (attach in this order):
 - result_front.*       ← the FINAL output of step 01 (REQUIRED — this is the primary GARMENT source of truth)
 - model_head_front.*   ← face / head identity-lock for the model (REQUIRED if provided in the task; this is the EXACT face the model must have)
 - model_front.*        ← full-body front-view pose / styling reference for the model (optional)
-- print_1_front.*      ← chest print (finished graphic asset, fidelity reinforcement)
+- print_1_front.*      ← OPTIONAL — chest print (finished graphic asset, fidelity reinforcement). May be ABSENT for this task. If absent, result_front.* shows a clean chest with no print, and so must this on-model shot.
 - model_*.*            ← generic model reference if no model_front.* / model_head_front.* (optional fallback)
 
 OBJECTIVE:
-Create a clean on-model front view that feels like the exact same physical t-shirt from result_front.*, now worn by a young male model. The chest print is the hero. The inner neck-label print ("бирка") is on the INSIDE of the back of the neckline — when the shirt is worn by a person, the model's neck blocks the collar opening so the inner label is NOT visible from a front-on shot. Do not try to surface it on the outer chest.
+Create a clean on-model front view that feels like the exact same physical t-shirt from result_front.*, now worn by a young male model. If result_front.* shows a chest print, that print is the hero. If result_front.* shows a clean chest (no print), then the chest stays clean on the model too. The inner neck-label print ("бирка") is on the INSIDE of the back of the neckline — when the shirt is worn by a person, the model's neck blocks the collar opening so the inner label is NOT visible from a front-on shot. Do not try to surface it on the outer chest.
 
 MODEL IDENTITY (HIGH PRIORITY):
 - If model_head_front.* is provided: the model's FACE / HEAD must match model_head_front.* exactly — same facial structure, same skin tone, same eye colour, same eyebrow shape, same nose, same mouth, same hair style/colour/length, same hairline. Do NOT generate a different face. The viewer must recognize this as the same person across shots.
@@ -579,10 +585,10 @@ Preserve from result_front.*: same color tone, same oversized fit, same collar s
 This must feel like the exact same t-shirt — not a reimagined version, not a different cut, not a different print.
 
 CHEST PRINT / GRAPHIC FIDELITY:
-The chest print must match result_front.* and print_1_front.* exactly.
-Do not re-render any letters or shapes. Allow only natural body curvature and fabric tension distortion.
+- IF print_1_front.* is provided AND result_front.* shows a chest print: the chest print must match result_front.* and print_1_front.* exactly. Do not re-render any letters or shapes. Allow only natural body curvature and fabric tension distortion.
+- IF print_1_front.* is NOT provided AND result_front.* shows a clean chest (no print): the model's chest must also remain a clean shirt with NO chest print. Do NOT invent a chest print. Do NOT carry print_2_back.* (the back print) onto the chest. The chest stays plain cotton, just like in result_front.*.
 
-FABRIC INTEGRATION (CRITICAL — print must look INTO the cotton, not on top):
+FABRIC INTEGRATION (CRITICAL — print must look INTO the cotton, not on top — applies only when there IS a chest print):
 - The chest print must look APPLIED INTO the cotton, not laid as a sticker. Visible cotton weave / microtexture must show THROUGH the dark areas of the print, like real screen-print ink absorbing slightly into cotton fibers.
 - The print must follow the body curvature: across the chest the print bends slightly with the pectoral curve, with the rib cage, with any fold from the model's pose. It is NOT flat. It is NOT rectangular. It does NOT shift as a block when the body moves.
 - Lighting on the print matches the lighting on the shirt around it: same highlight side, same shadow side, same falloff. If part of the chest is in shade, the print over that part is also slightly darker. Same for highlights.
@@ -695,6 +701,60 @@ One photorealistic 4:5 back-view on-model catalog image. The garment matches res
 }
 
 
+def parse_frame_notes(brief_text: str) -> tuple[str, list[str]]:
+    """Извлекает per-frame заметки из текста брифа.
+
+    Возвращает кортеж:
+    - global_note: полный текст пользовательского описания кадров (если есть),
+      который мы прокинем в КАЖДЫЙ промпт как "USER BRIEF — read this first".
+      Так Banana видит общую задумку (например: "front пустой, back с принтом")
+      даже если порядок шагов в задании отличается от 01/02/03/04/05.
+    - per_index_notes: список из 5 строк (или короче), где i-й элемент =
+      пользовательская заметка с номером i+1 в брифе. Используется как
+      «сильный» хинт для соответствующего шага, если соответствие
+      номеров шагам совпадает (1=01_FRONT, 2=02_BACK, ...).
+
+    Парсим нумерованный список: "1. ...", "1) ...", "1: ..." и т.д.
+    """
+    if not brief_text:
+        return "", []
+
+    pattern = re.compile(r"^\s*(\d{1,2})[.)\]:]\s*(.+?)\s*$")
+    notes: dict[int, str] = {}
+    raw_lines: list[str] = []
+    for line in brief_text.splitlines():
+        m = pattern.match(line)
+        if not m:
+            continue
+        try:
+            idx = int(m.group(1))
+        except ValueError:
+            continue
+        text = m.group(2).strip()
+        if not text:
+            continue
+        raw_lines.append(f"{idx}. {text}")
+        if 1 <= idx <= 5 and idx not in notes:
+            notes[idx] = text
+
+    global_note = "\n".join(raw_lines)
+    per_index_notes = [notes.get(i, "") for i in range(1, 6)]
+    return global_note, per_index_notes
+
+
+# Маппинг номера в брифе → SID шага. Используется только когда
+# пользователь явно следует стандартной нумерации (1=front, 2=back,
+# 3=tag, 4=model_front, 5=model_back). Если номера расходятся — на
+# этот случай каждый промпт всё равно получает full global_note.
+TSHIRT_FRAME_INDEX_TO_SID: dict[int, str] = {
+    1: "01_PROMPT_FRONT",
+    2: "02_PROMPT_BACK",
+    3: "03_PROMPT_TAG",
+    4: "04_PROMPT_MODEL_FRONT",
+    5: "05_PROMPT_MODEL_BACK",
+}
+
+
 # Per-step recipes: какие файлы прикреплять и что именно делает шаг.
 # Используются для генерации читаемой "шапки" промпта.
 # (key_in_placed_dict, short English description of the file)
@@ -739,10 +799,16 @@ TSHIRT_PROMPT_RECIPES: dict[str, list[tuple[str, str]]] = {
 
 
 def _build_prompt_header(sid: str,
-                         placed: dict[str, list[Path]] | None) -> str:
+                         placed: dict[str, list[Path]] | None,
+                         user_brief_global: str = "",
+                         user_frame_note: str = "") -> str:
     """Build a minimal English file-list header for a prompt.
 
     Format:
+        USER BRIEF (highest priority — read first):
+        <full numbered list from the user's brief>
+        Frame for THIS step: <specific note>   (if matches std numbering)
+
         FILES TO ATTACH:
         1) <name> — <short description>
         2) <name> — <short description>
@@ -752,7 +818,18 @@ def _build_prompt_header(sid: str,
     """
     recipe = TSHIRT_PROMPT_RECIPES.get(sid, [])
 
-    lines: list[str] = ["FILES TO ATTACH:"]
+    lines: list[str] = []
+    if user_brief_global or user_frame_note:
+        lines.append("USER BRIEF (highest priority — read first; if it "
+                     "conflicts with the technical prompt below, the user "
+                     "brief wins):")
+        if user_brief_global:
+            for ln in user_brief_global.splitlines():
+                lines.append(ln)
+        if user_frame_note:
+            lines.append(f"Frame for THIS step: {user_frame_note}")
+        lines.append("")
+    lines.append("FILES TO ATTACH:")
     n = 0
     for key, desc in recipe:
         if key.startswith("__manual_"):
@@ -772,20 +849,35 @@ def _build_prompt_header(sid: str,
 
 def make_tshirt_prompts(target: Path, has_tag: bool = True,
                         has_back_print: bool = True,
-                        placed: dict[str, list[Path]] | None = None) -> int:
+                        placed: dict[str, list[Path]] | None = None,
+                        user_brief_global: str = "",
+                        per_index_notes: list[str] | None = None) -> int:
     """Записывает промпты в target.
 
     has_tag=False → пропускает 03_PROMPT_TAG.
     has_back_print: пока не убираем 02 даже если нет — спина просто чистая.
     placed: словарь refs (см. pack_refs) для построения per-step шапок.
+    user_brief_global: полный текст user-frame-list из брифа (одна и та же
+        строка для каждого шага, чтобы Banana видел общую задумку).
+    per_index_notes: список заметок 1..5; если SID соответствует индексу
+        по стандартной нумерации, добавляем "Frame for THIS step: ...".
 
     Возвращает число записанных файлов.
     """
     written = 0
+    per = per_index_notes or []
     for sid, body in TSHIRT_PROMPTS.items():
         if not has_tag and sid == "03_PROMPT_TAG":
             continue
-        header = _build_prompt_header(sid, placed)
+        # пытаемся подобрать конкретную заметку для шага по стандартному
+        # маппингу 1→01, 2→02, ... (best-effort; если порядок другой —
+        # пользователь увидит расхождение через user_brief_global)
+        idx_for_sid = {v: k for k, v in TSHIRT_FRAME_INDEX_TO_SID.items()}.get(sid)
+        per_step_note = ""
+        if idx_for_sid and idx_for_sid - 1 < len(per):
+            per_step_note = per[idx_for_sid - 1]
+        header = _build_prompt_header(sid, placed, user_brief_global,
+                                      per_step_note)
         write_text(target / f"{sid}.txt", header + body)
         written += 1
     return written
@@ -1181,9 +1273,12 @@ def main() -> int:
     # если в задании нет print_3_tag.
     has_tag = c.print_tag is not None
     has_back_print = c.print_back is not None
+    user_brief_global, per_index_notes = parse_frame_notes(c.brief_text)
     if args.type == "tshirt":
         make_tshirt_prompts(ready, has_tag=has_tag,
-                            has_back_print=has_back_print, placed=placed)
+                            has_back_print=has_back_print, placed=placed,
+                            user_brief_global=user_brief_global,
+                            per_index_notes=per_index_notes)
         if not has_tag:
             scenarios = [s for s in scenarios if s.get("id") != "03_PROMPT_TAG"]
     else:
