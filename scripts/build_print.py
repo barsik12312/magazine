@@ -289,6 +289,79 @@ def pack_compose_refs(c: ComposeClassified, refs_dir: Path) -> dict[str, list[Pa
 
 # ---------- prompt templates ----------
 
+# Соответствие aspect-ratio → пиксельный canvas. Banana хорошо ловит
+# пропорции когда им дают конкретный размер в пикселях. Default 16:9.
+ASPECT_TO_CANVAS: dict[str, tuple[int, int, str]] = {
+    # ratio_str: (width, height, orientation)
+    "16:9": (1920, 1080, "landscape"),
+    "9:16": (1080, 1920, "portrait"),
+    "4:5": (1600, 2000, "portrait"),
+    "5:4": (2000, 1600, "landscape"),
+    "3:4": (1500, 2000, "portrait"),
+    "4:3": (2000, 1500, "landscape"),
+    "1:1": (2000, 2000, "square"),
+    "2:1": (2000, 1000, "landscape (panoramic)"),
+    "1:2": (1000, 2000, "portrait (tall)"),
+    "5:2": (2000, 800, "landscape (wide banner)"),
+}
+
+
+def _aspect_block(ratio: str) -> str:
+    """Жёсткий блок про aspect-ratio. Banana часто игнорирует мягкие
+    подсказки '4:5', поэтому повторяем требование 3 раза в разных
+    местах с явным пикселем и orientation. Этот блок встаёт ПЕРВЫМ
+    в промпте — выше всего остального.
+    """
+    if ratio not in ASPECT_TO_CANVAS:
+        # пользователь передал свой ratio формата W:H — попробуем разобрать
+        try:
+            w, h = ratio.split(":")
+            wi, hi = int(w), int(h)
+            # масштабируем к ~2000 по большей стороне
+            if wi >= hi:
+                width = 2000
+                height = round(2000 * hi / wi)
+            else:
+                height = 2000
+                width = round(2000 * wi / hi)
+            orient = ("landscape" if wi > hi
+                      else "portrait" if hi > wi
+                      else "square")
+        except (ValueError, ZeroDivisionError):
+            # fallback — 16:9
+            ratio = "16:9"
+            width, height, orient = ASPECT_TO_CANVAS["16:9"]
+    else:
+        width, height, orient = ASPECT_TO_CANVAS[ratio]
+
+    # Динамический список "NOT X" — повторяем 2-3 наиболее типичные
+    # неверные пропорции, исключая саму запрошенную (а то получится
+    # "NOT 4:5" при aspect=4:5).
+    common_wrong = ["1:1", "4:5", "16:9", "3:4"]
+    negations = [r for r in common_wrong if r != ratio][:3]
+    not_list = ", ".join(f"NOT {r}" for r in negations)
+
+    return f"""\
+╔══════════════════════════════════════════════════════════════════╗
+║              CRITICAL OUTPUT REQUIREMENT — READ FIRST            ║
+╚══════════════════════════════════════════════════════════════════╝
+
+ASPECT RATIO: STRICTLY {ratio} ({orient}).
+CANVAS SIZE: {width} × {height} pixels — generate the image at exactly
+this aspect ratio. {not_list}. Exactly {ratio} {orient}
+({width}×{height}).
+
+This is non-negotiable. The output will be rejected and re-prompted
+if the aspect ratio is anything other than {ratio} {orient}. The
+user has explicitly fixed this requirement.
+
+If you produce any aspect ratio other than {ratio} you have failed
+the task. Re-check your canvas dimensions ({width}×{height}) before
+finalising.
+
+"""
+
+
 COMPOSE_PRINT_BASE = """\
 This is a flat-art generation task. The OUTPUT is a single PRINT ASSET — a
 piece of artwork that will later be applied as a screen-print onto a
@@ -359,10 +432,9 @@ COMPOSE_PRINT_BY_KIND: dict[str, str] = {
     "front": """\
 
 OUTPUT SPEC — FRONT CHEST PRINT
-- Aspect ratio: roughly square or vertical 4:5. Will be applied to
-  the upper / mid chest area of a t-shirt.
-- Target render area: aim for ~2000×2400 px or similar. Hi-res,
-  print-quality.
+- Will be applied to the upper / mid chest area of a t-shirt.
+- Aspect ratio is FIXED — see the CRITICAL OUTPUT REQUIREMENT block
+  above. Do NOT override it with your own square preference.
 - Scale: the assembled artwork is the kind of size you would expect
   for a chest print — bold and visible from a few meters, but not
   edge-bleeding the t-shirt.
@@ -373,9 +445,9 @@ OUTPUT SPEC — FRONT CHEST PRINT
     "back": """\
 
 OUTPUT SPEC — BACK PRINT
-- Aspect ratio: roughly square or vertical 4:5 / 3:4. Will be
-  applied to the upper / mid back panel of a t-shirt.
-- Target render area: ~2000×2400 px or similar. Hi-res.
+- Will be applied to the upper / mid back panel of a t-shirt.
+- Aspect ratio is FIXED — see the CRITICAL OUTPUT REQUIREMENT block
+  above. Do NOT override it with your own square preference.
 - Scale: typical back-print size — fills most of the upper back
   area, can be slightly larger than the chest print.
 - Centre the composition on its own canvas. Background is pure
@@ -388,11 +460,10 @@ OUTPUT SPEC — BACK PRINT
     "tag": """\
 
 OUTPUT SPEC — INNER NECK-LABEL PRINT (бирка)
-- Aspect ratio: small, horizontal banner — roughly 5:2 or 3:1.
-  Will sit inside the back-of-neck on the inner surface of the
+- Will sit inside the back-of-neck on the inner surface of the
   collar; visible from the front through the open collar.
-- Target render area: ~1600×640 px or similar — readable but
-  compact.
+- Aspect ratio is FIXED — see the CRITICAL OUTPUT REQUIREMENT block
+  above.
 - Scale: small printed brand mark / tag-style label. Single
   focused element (not a busy collage). Typography-led if the
   brief mentions a brand name; or a tiny graphic mark.
@@ -405,9 +476,40 @@ OUTPUT SPEC — INNER NECK-LABEL PRINT (бирка)
 }
 
 
+# Финальный reminder в самом конце промпта — третий повтор aspect-ratio
+# для надёжности.
+def _aspect_footer(ratio: str) -> str:
+    if ratio not in ASPECT_TO_CANVAS:
+        try:
+            w, h = ratio.split(":")
+            wi, hi = int(w), int(h)
+            orient = ("landscape" if wi > hi
+                      else "portrait" if hi > wi
+                      else "square")
+        except (ValueError, ZeroDivisionError):
+            ratio = "16:9"
+            orient = ASPECT_TO_CANVAS["16:9"][2]
+    else:
+        orient = ASPECT_TO_CANVAS[ratio][2]
+    return (
+        f"\n\nFINAL REMINDER: aspect ratio MUST be {ratio} ({orient}).\n"
+        f"Re-check before producing the final output. Square (1:1) is "
+        f"NOT acceptable.\n"
+    )
+
+
 def build_compose_prompt(kind: str, brief_text: str,
-                          placed: dict[str, list[Path]]) -> str:
-    """Собирает один промпт-файл: header (FILES TO ATTACH) + technical body."""
+                          placed: dict[str, list[Path]],
+                          aspect: str = "16:9") -> str:
+    """Собирает один промпт-файл: header (FILES TO ATTACH) + technical body.
+
+    Aspect-ratio требование вставляется ТРИ раза:
+    1. Жирный CRITICAL блок в самом начале body (выше всего)
+    2. Внутри OUTPUT SPEC — отсылка на этот блок
+    3. FINAL REMINDER в самом конце
+    Это сделано потому что Banana систематически игнорирует мягкие
+    aspect-ratio hints и сваливается в 1:1.
+    """
     if kind not in COMPOSE_PRINT_BY_KIND:
         raise ValueError(f"unknown print-kind {kind!r}; must be one of "
                          f"{', '.join(COMPOSE_PRINT_BY_KIND)}")
@@ -432,16 +534,23 @@ def build_compose_prompt(kind: str, brief_text: str,
     header_lines.append("")
     header = "\n".join(header_lines)
 
-    body = COMPOSE_PRINT_BASE + COMPOSE_PRINT_BY_KIND[kind]
+    body = (
+        _aspect_block(aspect)
+        + COMPOSE_PRINT_BASE
+        + COMPOSE_PRINT_BY_KIND[kind]
+    )
 
-    # User brief — добавляем в самый конец промпта как явную секцию,
-    # потому что для compose mode стиль ИДЁТ от пользователя (в отличие
-    # от build_task где per-frame заметки вообще не идут в Banana —
-    # тут стиль это и есть содержание задачи, не frame-конфиг).
+    # User brief — добавляем как явную секцию, потому что для compose
+    # mode стиль ИДЁТ от пользователя (в отличие от build_task где
+    # per-frame заметки вообще не идут в Banana — тут стиль это и есть
+    # содержание задачи, не frame-конфиг).
     if brief_text and brief_text.strip():
         body += "\n\nUSER BRIEF (highest priority — follow strictly):\n"
         body += brief_text.strip()
         body += "\n"
+
+    # Финальный reminder про aspect — третий повтор для надёжности
+    body += _aspect_footer(aspect)
 
     return header + body
 
@@ -449,7 +558,13 @@ def build_compose_prompt(kind: str, brief_text: str,
 # ---------- meta files ----------
 
 def make_brief(task_dir: Path, slug: str, kind: str, brief: str,
-               classified: ComposeClassified) -> None:
+               classified: ComposeClassified,
+               aspect: str = "16:9") -> None:
+    if aspect in ASPECT_TO_CANVAS:
+        w, h, orient = ASPECT_TO_CANVAS[aspect]
+        aspect_str = f"**{aspect}** ({w}×{h} {orient})"
+    else:
+        aspect_str = f"**{aspect}**"
     lines = [
         f"# Print-compose: {slug} ({kind})",
         "",
@@ -459,6 +574,8 @@ def make_brief(task_dir: Path, slug: str, kind: str, brief: str,
         "",
         f"Один принт-ассет на нейтральном фоне (#FFFFFF). Тип: **{kind}** "
         f"({'грудной' if kind == 'front' else 'back' if kind == 'back' else 'бирка'}).",
+        "",
+        f"Aspect ratio (зашит в промпт жёстко): {aspect_str}.",
         "",
         "## Стиль / brief",
         "",
@@ -544,6 +661,17 @@ def parse_args() -> argparse.Namespace:
                         "--brief-file или через задание.md в input.")
     p.add_argument("--brief-file", type=Path, default=None,
                    help="Путь к md/txt файлу с описанием стиля.")
+    p.add_argument("--aspect", default="16:9",
+                   help="Пропорции выходного принта в формате W:H. "
+                        "Default 16:9 (1920×1080 landscape). Поддерживаемые "
+                        "пресеты с пиксельным размером: " +
+                        ", ".join(sorted(ASPECT_TO_CANVAS.keys())) +
+                        ". Любой другой формат W:H (например 7:3) тоже "
+                        "примется и масштабируется к ~2000px по большей "
+                        "стороне. Banana систематически игнорирует мягкие "
+                        "hints и сваливается в 1:1, поэтому скрипт повторяет "
+                        "требование 3 раза в промпте + даёт явный пиксельный "
+                        "размер.")
     p.add_argument("--out-root", type=Path, default=None,
                    help="Куда складывать (по умолчанию: stores/prints/tasks/)")
     return p.parse_args()
@@ -630,11 +758,13 @@ def main() -> int:
             shutil.copy2(src, extras_dir / src.name)
 
     # Промпт.
-    prompt_text = build_compose_prompt(args.print_kind, brief, placed)
+    prompt_text = build_compose_prompt(args.print_kind, brief, placed,
+                                        aspect=args.aspect)
     write_text(ready / "01_PROMPT_COMPOSE_PRINT.txt", prompt_text)
 
     # Meta.
-    make_brief(task_dir, slug, args.print_kind, brief, c)
+    make_brief(task_dir, slug, args.print_kind, brief, c,
+               aspect=args.aspect)
     make_readme(ready, args.print_kind)
 
     print(f"OK. Создал: {task_dir}")

@@ -299,7 +299,21 @@ python scripts/build_print.py \
     --input <папка>
 ```
 
-`--print-kind` определяет пропорции выходного принта: `front` (≈4:5 grud/chest), `back` (≈4:5 / 3:4 спина), `tag` (≈5:2 горизонтальный мини-баннер для бирки).
+`--print-kind` определяет роль принта (front/back/tag — куда он потом пойдёт). Пропорции выходного канваса задаются ОТДЕЛЬНО через `--aspect` (default `16:9` = 1920×1080 landscape). Banana систематически игнорирует мягкие aspect-hints и сваливается в 1:1, поэтому скрипт повторяет требование 3 раза в промпте + указывает явный пиксельный размер.
+
+Поддерживаемые пресеты с пиксельным размером: `1:1, 16:9, 9:16, 4:5, 5:4, 3:4, 4:3, 2:1, 1:2, 5:2`. Любой другой формат `W:H` (например `7:3`) тоже принимается и масштабируется к ~2000px по большей стороне.
+
+Примеры:
+```bash
+# default — 16:9 landscape
+python scripts/build_print.py --slug back-v1 --print-kind back --input ./refs
+
+# вертикальный 4:5 для классического back-print
+python scripts/build_print.py --slug back-v2 --print-kind back --input ./refs --aspect 4:5
+
+# тонкий горизонтальный для бирки
+python scripts/build_print.py --slug tag-v1 --print-kind tag --input ./refs --aspect 5:2
+```
 
 ### Pinterest-ссылки автоматически
 Если пользователь дал URL'ы (а не файлы), создай `urls.txt` (по 1 URL на строку) и вызывай:
