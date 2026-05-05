@@ -25,11 +25,12 @@
 | Человек сзади | фото модели во весь рост сзади | `чсзади*`, `model_back*`, `model-back*` |
 | Голова спереди | лицо / голова модели — identity-lock | `голова_спереди*`, `head_front*`, `head-front*`, `face*` |
 | Голова сзади | затылок / волосы — identity-lock | `голова_сзади*`, `head_back*`, `head-back*` |
+| Design sketch | B&W коллаж front+back от дизайнера (design-intent reference, **не принт**) | `коллаж*`, `эскиз*`, `зарисовк*`, `sketch*`, `mockup*`, `design*` |
 | Фон | альтернативный фон, заменяет балкон | `фон*`, `background*`, `bg*`, `scene*` |
 | Модель | общий референс позы / типажа модели | `модель*`, `model*` (если без направления front/back) |
 | Задание | текст задания | `задание.*`, `brief.*`, `task.*` (только `.txt` / `.md`) |
 
-**Приоритет классификации:** `голова/head/face` → `чспереди/чсзади/model_front/model_back` → `спереди/сзади/front/back (garment)` → `бирка/tag` → `фон/scene` → `модель/model` → `extras`.
+**Приоритет классификации:** `голова/head/face` → `чспереди/чсзади/model_front/model_back` → `коллаж/эскиз/sketch/mockup/design` → `спереди/сзади/front/back (garment)` → `бирка/tag` → `фон/scene` → `модель/model` → `extras`.
 
 Если файл не подошёл ни под что — он копируется в `extras/` без переименования и в промптах не используется.
 
@@ -41,6 +42,7 @@
 - **Принт 3 / бирка**: если нет графики — шаг 03 пропускается, бирка не наносится.
 - **Модель**: если нет — модель описывается дефолтно как «young man early 20s, slim athletic, dark hair».
 - **Голова**: если нет `model_head_front` / `model_head_back` — лицо модели не лочится (Gemini генерит случайное).
+- **Design sketch**: если есть — попадает в refs как `design_sketch.*` и подключается к шагам 01/02 как **OPTIONAL design-intent reference**. Gemini **не имеет права** извлекать из него графику или применять как принт. Реальные принты — только в `print_1_front.* / print_2_back.* / print_3_tag.*`. На эскизе бирки никогда нет — это никак не отменяет правила про бирку.
 
 ## Пример входной папки
 
@@ -57,6 +59,7 @@ inputs/2026-05-04_givenchy/
 ├── чсзади.jpg                   ← фото модели сзади (full body)
 ├── голова_спереди.jpg            ← лицо модели — identity lock
 ├── голова_сзади.jpg              ← затылок модели — identity lock
+├── коллаж.jpg                    ← опц., B&W эскиз front+back от дизайнера (НЕ принт!)
 ├── модель.jpg                   ← общий референс модели (опц.)
 └── (фон отсутствует → дефолт = балкон)
 ```
@@ -87,6 +90,7 @@ stores/tshirts/tasks/2026-05-04_givenchy/
         ├── model_back.jpg            ← опц.
         ├── model_head_front.jpg      ← опц. (identity-lock лицо)
         ├── model_head_back.jpg       ← опц. (identity-lock затылок)
+        ├── design_sketch.jpg         ← опц. (B&W коллаж от дизайнера, design-intent only)
         ├── scene_01.jpg              ← либо балкон, либо твой кастомный фон
         ├── scene_02.jpg
         ├── ...

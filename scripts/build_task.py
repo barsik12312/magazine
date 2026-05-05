@@ -115,6 +115,7 @@ class Classified:
     model_back: Path | None = None   # фото человека/модели во весь рост сзади (чсзади)
     model_head_front: Path | None = None  # лицо/голова спереди — identity-lock для шага 04
     model_head_back: Path | None = None   # затылок/волосы сзади — identity-lock для шага 05
+    design_sketch: Path | None = None  # коллаж/эскиз front+back в B&W — design intent reference, НЕ принт-ассет
     backgrounds: list[Path] = field(default_factory=list)
     models: list[Path] = field(default_factory=list)  # общие модель-референсы без явного ракурса
     extras: list[Path] = field(default_factory=list)
@@ -224,6 +225,17 @@ def classify_inputs(folder: Path) -> Classified:
             out.models.append(path)
             continue
 
+        # 3) DESIGN SKETCH — чёрно-белый коллаж front+back от дизайнера.
+        # Это design-intent reference, НЕ принт. Берём ДО garment-front/back,
+        # чтобы "коллаж_спереди" не утекало в garment_front.
+        if _has_token(stem, "коллаж", "эскиз", "зарисовк", "sketch", "mockup",
+                      "design"):
+            if out.design_sketch is None:
+                out.design_sketch = path
+            else:
+                out.extras.append(path)
+            continue
+
         # фоны (раньше garment-back, чтобы "background_back" не уходило в garment_back)
         if _has_token(stem, "background", "bg", "scene", "фон", "балкон"):
             out.backgrounds.append(path)
@@ -310,6 +322,7 @@ def pack_refs(c: Classified, refs_dir: Path, ttype: str) -> dict[str, list[Path]
         "model_back": [],
         "model_head_front": [],
         "model_head_back": [],
+        "design_sketch": [],
         "scene": [],
         "model": [],
     }
@@ -331,6 +344,7 @@ def pack_refs(c: Classified, refs_dir: Path, ttype: str) -> dict[str, list[Path]
     put(c.model_back, "model_back", "model_back")
     put(c.model_head_front, "model_head_front", "model_head_front")
     put(c.model_head_back, "model_head_back", "model_head_back")
+    put(c.design_sketch, "design_sketch", "design_sketch")
 
     # сцена: либо переданные backgrounds, либо балкон-дефолт для футболок
     scenes = c.backgrounds[:]
@@ -372,6 +386,7 @@ REFERENCE IMAGES (attach in this order):
 - print_3_tag.*    ← new neck-label print to apply on the inner back-of-neckline (finished graphic asset, small)
 - garment_tag.*    ← optional close-up reference of the existing inner neck-label area
 - scene_*.*        ← detail-memory references of the real balcony scene; use only as visual memory so background details are not invented if any tiny gap appears around the modified regions
+- design_sketch.*  ← OPTIONAL black-and-white front+back collage / sketch from the designer. This is a DESIGN-INTENT REFERENCE ONLY. It is NOT a print asset and NOT a canvas. Do NOT extract pixels from it. Do NOT apply it to the shirt. Do NOT trace it. The actual finished print artwork lives in print_1_front.* / print_2_back.* / print_3_tag.* — those are the only sources of printed graphics. The sketch only shows the rough vision of how the finished t-shirt should "feel" overall (silhouette, balance of front and back graphics). The "бирка" / neck-label print is NEVER drawn on the sketch — its absence on the sketch must NOT be interpreted as "no neck-label"; the neck-label rule still comes from print_3_tag.* and garment_front.*.
 
 OBJECTIVE — DO ALL IN ONE PASS:
 1. Erase the existing MAIN CHEST PRINT on the OUTER FRONT of the t-shirt in garment_front.* completely. Reconstruct clean cotton fabric in that area, preserving folds, light, and shadow as in the rest of the shirt.
@@ -434,6 +449,7 @@ REFERENCE IMAGES (attach in this order):
 - print_2_back.*   ← new back print (finished graphic asset)
 - garment_tag.*    ← optional reference for fabric / collar close-up
 - scene_*.*        ← detail-memory references of the balcony scene (memory only, not a scene donor)
+- design_sketch.*  ← OPTIONAL black-and-white front+back collage / sketch from the designer. DESIGN-INTENT REFERENCE ONLY. Do NOT extract pixels from it. Do NOT apply it to the shirt. The real back print is print_2_back.* — that is the only source of printed graphics. The sketch only shows rough overall vision. The neck-label "бирка" is never drawn on the sketch and is also not visible on the OUTER back of the shirt anyway.
 
 OBJECTIVE — DO ALL IN ONE PASS:
 1. Erase the existing back artwork on the OUTER back of the t-shirt in garment_back.* completely. Reconstruct clean cotton fabric there with the same folds, light, and shadow as the rest of the shirt.
@@ -723,6 +739,11 @@ def make_brief(task_dir: Path, ttype: str, slug: str, brief: str,
         f"- garment_front: {classified.garment_front.name if classified.garment_front else '—'}",
         f"- garment_back: {classified.garment_back.name if classified.garment_back else '—'}",
         f"- garment_tag: {classified.garment_tag.name if classified.garment_tag else '—'}",
+        f"- model_front: {classified.model_front.name if classified.model_front else '—'}",
+        f"- model_back: {classified.model_back.name if classified.model_back else '—'}",
+        f"- model_head_front: {classified.model_head_front.name if classified.model_head_front else '—'}",
+        f"- model_head_back: {classified.model_head_back.name if classified.model_head_back else '—'}",
+        f"- design_sketch: {classified.design_sketch.name if classified.design_sketch else '—'} (B&W коллаж front+back, design-intent only, НЕ принт)",
         f"- backgrounds: {len(classified.backgrounds)} файла"
         + ("" if has_custom_scene else " (нет → используется balcony template)"),
         f"- models: {len(classified.models)} файла",
