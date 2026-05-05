@@ -697,143 +697,75 @@ One photorealistic 4:5 back-view on-model catalog image. The garment matches res
 
 # Per-step recipes: какие файлы прикреплять и что именно делает шаг.
 # Используются для генерации читаемой "шапки" промпта.
-TSHIRT_PROMPT_TITLES: dict[str, str] = {
-    "01_PROMPT_FRONT": "Футболка СПЕРЕДИ на вешалке (edit поверх реального фото)",
-    "02_PROMPT_BACK": "Футболка СЗАДИ на вешалке (edit поверх реального фото)",
-    "03_PROMPT_TAG": "Бирка КРУПНЫМ ПЛАНОМ (изнанка задней горловины)",
-    "04_PROMPT_MODEL_FRONT": "Человек СПЕРЕДИ в этой футболке",
-    "05_PROMPT_MODEL_BACK": "Человек СЗАДИ в этой футболке",
-}
-
-TSHIRT_PROMPT_BRIEFS: dict[str, str] = {
-    "01_PROMPT_FRONT": (
-        "Сотри старый грудной принт и старую бирку (видна через вырез) с "
-        "реального фото футболки спереди и нанеси новые. Фон, вешалку, "
-        "ткань, складки, свет, ракурс — НЕ ТРОГАЙ. За один прогон. "
-        "Принт должен выглядеть как настоящий screen-print: краска "
-        "впитана в волокна хлопка, не плоская наклейка."
-    ),
-    "02_PROMPT_BACK": (
-        "Сотри старый принт со спины. Если в задании есть print_2_back — "
-        "нанеси его. Если нет — оставь спину ЧИСТОЙ (плотная ткань без "
-        "принта, никаких выдумок и переноса грудного принта). Фон, "
-        "вешалку, ткань, свет — НЕ ТРОГАЙ."
-    ),
-    "03_PROMPT_TAG": (
-        "Сделай близкий макро-кадр ИЗНАНКИ ЗАДНЕЙ ЧАСТИ ГОРЛОВИНЫ с "
-        "новым принтом-биркой. Видны волокна хлопка, краска впитана в "
-        "ткань, естественный масштаб ширины горловины. Это НЕ наружный "
-        "воротник и НЕ care-нашивка."
-    ),
-    "04_PROMPT_MODEL_FRONT": (
-        "Сделай каталожный кадр МОДЕЛИ СПЕРЕДИ в той же футболке, что "
-        "получилась в шаге 01. Лицо ровно как на model_head_front, поза/"
-        "фигура — как на model_front. Грудной принт сохранить точно."
-    ),
-    "05_PROMPT_MODEL_BACK": (
-        "Сделай каталожный кадр ТОГО ЖЕ ЧЕЛОВЕКА СЗАДИ в той же "
-        "футболке, что получилась в шаге 02. Затылок/волосы ровно как на "
-        "model_head_back, поза — как на model_back. Бирку не показываем "
-        "(волосы перекрывают)."
-    ),
-}
-
-# (key_in_placed_dict, is_required, краткое описание)
-# ВАЖНО: ключи должны совпадать с ключами `placed` из pack_refs (см. функцию).
-# Например, грудной принт хранится под ключом "print_front", а не "print_1_front".
-TSHIRT_PROMPT_RECIPES: dict[str, list[tuple[str, bool, str]]] = {
+# (key_in_placed_dict, short English description of the file)
+# Keys must match `placed` keys produced by pack_refs.
+TSHIRT_PROMPT_RECIPES: dict[str, list[tuple[str, str]]] = {
     "01_PROMPT_FRONT": [
-        ("garment_front", True, "база — реальное фото футболки спереди"),
-        ("print_front", True, "новый грудной принт (графический ассет)"),
-        ("print_tag", False, "новый принт-бирка (если есть в задании)"),
-        ("garment_tag", False, "опц. — крупный план воротника"),
-        ("scene", False, "memory reference балкона / окружения"),
-        ("design_sketch", False, "опц. — B&W эскиз дизайнера; НЕ принт, только design intent"),
+        ("garment_front", "base front photo (canvas)"),
+        ("print_front", "new chest print"),
+        ("print_tag", "new inner-neck label print"),
+        ("garment_tag", "neckline close-up ref"),
+        ("scene", "balcony memory ref"),
+        ("design_sketch", "B&W design sketch — reference only, NOT a print"),
     ],
     "02_PROMPT_BACK": [
-        ("garment_back", True, "база — реальное фото футболки сзади"),
-        ("print_back", False, "новый принт на спину (если нет — спина останется чистой)"),
-        ("garment_tag", False, "опц. — референс воротника"),
-        ("scene", False, "memory reference окружения"),
-        ("design_sketch", False, "опц. — B&W эскиз дизайнера; НЕ принт, только design intent"),
+        ("garment_back", "base back photo (canvas)"),
+        ("print_back", "new back print (if absent: clean back, no print)"),
+        ("garment_tag", "neckline close-up ref"),
+        ("scene", "balcony memory ref"),
+        ("design_sketch", "B&W design sketch — reference only, NOT a print"),
     ],
     "03_PROMPT_TAG": [
-        ("garment_front", True, "база — фото футболки спереди (дает память про вырез горловины)"),
-        ("print_tag", True, "новый принт-бирка (графический ассет)"),
-        ("garment_tag", False, "опц. — близкий план воротника"),
+        ("garment_front", "front photo (memory of collar opening)"),
+        ("print_tag", "new inner-neck label print"),
+        ("garment_tag", "neckline close-up ref"),
     ],
     "04_PROMPT_MODEL_FRONT": [
-        ("__manual__", True, "result_front.* — ТВОЙ РЕЗУЛЬТАТ ШАГА 01 (прикрепи вручную из outputs/)"),
-        ("model_head_front", False, "лицо/голова модели — identity-lock (тот же человек)"),
-        ("model_front", False, "поза/фигура модели спереди"),
-        ("model_head_back", False, "опц. — затылок (для согласованности с шагом 05)"),
-        ("print_front", False, "грудной принт — для верности воспроизведения"),
-        ("print_tag", False, "опц. — бирка (на модели не видна, но модель помнит)"),
+        ("__manual_result_front__", "result_front.* — your output of step 01 (attach from outputs/)"),
+        ("model_head_front", "front face — identity lock"),
+        ("model_front", "full-body front pose ref"),
+        ("model_head_back", "back of head (consistency with step 05)"),
+        ("print_front", "chest print fidelity ref"),
+        ("print_tag", "inner-neck print ref (not visible on model)"),
     ],
     "05_PROMPT_MODEL_BACK": [
-        ("__manual__", True, "result_back.* — ТВОЙ РЕЗУЛЬТАТ ШАГА 02 (прикрепи вручную из outputs/)"),
-        ("model_head_back", False, "затылок/волосы модели — identity-lock"),
-        ("model_back", False, "поза/фигура модели сзади"),
-        ("model_head_front", False, "опц. — лицо (для согласованности с шагом 04)"),
-        ("print_back", False, "back-принт — если был в задании"),
+        ("__manual_result_back__", "result_back.* — your output of step 02 (attach from outputs/)"),
+        ("model_head_back", "back of head — identity lock"),
+        ("model_back", "full-body back pose ref"),
+        ("model_head_front", "face (consistency with step 04)"),
+        ("print_back", "back print fidelity ref"),
     ],
 }
 
 
 def _build_prompt_header(sid: str,
                          placed: dict[str, list[Path]] | None) -> str:
-    """Собирает читаемую шапку промпта: что делаем + какие файлы прикрепить.
+    """Build a minimal English file-list header for a prompt.
 
-    placed=None → шапка перечислит все возможные файлы абстрактно
-    (используется в make_tshirt_prompts когда классификация недоступна).
+    Format:
+        FILES TO ATTACH:
+        1) <name> — <short description>
+        2) <name> — <short description>
+        ---
+
+    Optional missing files are omitted silently.
     """
-    title = TSHIRT_PROMPT_TITLES.get(sid, sid)
-    brief = TSHIRT_PROMPT_BRIEFS.get(sid, "")
     recipe = TSHIRT_PROMPT_RECIPES.get(sid, [])
 
-    lines: list[str] = []
-    bar = "═" * 71
-    lines.append(bar)
-    lines.append(f"  {sid}: {title}")
-    lines.append(bar)
-    lines.append("")
-    lines.append("ЧТО ОТ ТЕБЯ ХОТЯТ (краткое объяснение для Nano Banana Pro):")
-    lines.append(brief)
-    lines.append("")
-    lines.append("ФАЙЛЫ ДЛЯ ПРИКРЕПЛЕНИЯ К ЭТОМУ ПРОМПТУ (бери из refs/ или")
-    lines.append("из ~/Downloads, куда скрипт их продублировал):")
-
+    lines: list[str] = ["FILES TO ATTACH:"]
     n = 0
-    for key, required, desc in recipe:
-        if key == "__manual__":
+    for key, desc in recipe:
+        if key.startswith("__manual_"):
             n += 1
-            tag = "ОБЯЗАТЕЛЬНО" if required else "опционально"
-            lines.append(f"  {n}) [{tag}] {desc}")
+            lines.append(f"{n}) {desc}")
             continue
         files = placed.get(key, []) if placed is not None else None
         if files:
             for fp in files:
                 n += 1
-                tag = "ОБЯЗАТЕЛЬНО" if required else "опционально"
-                lines.append(f"  {n}) [{tag}] refs/{fp.name}  — {desc}")
-        else:
-            # файл не положили в задании
-            if required:
-                n += 1
-                lines.append(
-                    f"  {n}) [ВНИМАНИЕ — НЕ НАЙДЕН] {key}.* — {desc}. "
-                    f"Положи в input-папку и пересобери."
-                )
-            else:
-                # опциональный отсутствующий — пропускаем тихо
-                pass
-
+                lines.append(f"{n}) {fp.name} — {desc}")
     lines.append("")
-    lines.append("ВАЖНО: ниже идёт длинный технический промпт. Скопируй его")
-    lines.append("ЦЕЛИКОМ (с этой шапкой) и вставь в Gemini одним сообщением")
-    lines.append("вместе с прикреплёнными файлами выше.")
-    lines.append("")
-    lines.append(bar)
+    lines.append("---")
     lines.append("")
     return "\n".join(lines)
 
