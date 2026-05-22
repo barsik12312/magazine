@@ -1,0 +1,41 @@
+{
+  "_comment": "Пример frames.json под ТЗ от пользователя: 1) общая спина 2) спина крупнее 3) пустая грудь 4) модель-фронт без принта 5) модель-бэк с принтом. См. GEMINI.md секция 4.5 для полной схемы.",
+  "_kinds_allowed": [
+    "front_hanger",
+    "back_hanger",
+    "tag_macro",
+    "model_front",
+    "model_back",
+    "front_detail",
+    "back_detail"
+  ],
+  "_fields": {
+    "kind": "обязательно, один из _kinds_allowed",
+    "clean": "опционально, default false. Если true для front_hanger/front_detail/model_front — грудной принт не наносится. Если true для back_hanger/back_detail/model_back — back-принт не наносится. Для tag_macro не применимо.",
+    "note": "опционально, свободная заметка от пользователя. ТОЛЬКО для аудита и логов. В промпт для Banana НЕ копируется."
+  },
+  "frames": [
+    {
+      "kind": "back_hanger",
+      "note": "Фото спины где просто белое (общий вид с принтом 2.jpg)"
+    },
+    {
+      "kind": "back_detail",
+      "note": "Фото спины уже ближе — макро/zoom в принт"
+    },
+    {
+      "kind": "front_hanger",
+      "clean": true,
+      "note": "Фото спереди полностью пустое (нет грудного принта)"
+    },
+    {
+      "kind": "model_front",
+      "clean": true,
+      "note": "Модель спереди в новой футболке, грудь чистая"
+    },
+    {
+      "kind": "model_back",
+      "note": "Модель сзади с принтом 2.jpg"
+    }
+  ]
+}
